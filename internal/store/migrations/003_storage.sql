@@ -1,0 +1,45 @@
+-- up
+CREATE TABLE IF NOT EXISTS storage_accounts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    label TEXT NOT NULL,
+    provider TEXT NOT NULL DEFAULT 'b2',
+    key_id TEXT NOT NULL,
+    secret_encrypted TEXT NOT NULL,
+    region TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'connected',
+    active INTEGER NOT NULL DEFAULT 0,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS audit_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    actor TEXT NOT NULL DEFAULT '',
+    action TEXT NOT NULL,
+    target TEXT NOT NULL DEFAULT '',
+    detail TEXT NOT NULL DEFAULT '',
+    status INTEGER NOT NULL DEFAULT 200
+);
+
+CREATE INDEX IF NOT EXISTS idx_audit_events_at ON audit_events (at);
+CREATE INDEX IF NOT EXISTS idx_audit_events_action ON audit_events (action);
+
+CREATE TABLE IF NOT EXISTS bucket_scans (
+    bucket_name TEXT PRIMARY KEY,
+    objects INTEGER NOT NULL DEFAULT 0,
+    bytes INTEGER NOT NULL DEFAULT 0,
+    scanned_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS usage_daily (
+    day TEXT PRIMARY KEY,
+    bytes INTEGER NOT NULL DEFAULT 0,
+    objects INTEGER NOT NULL DEFAULT 0
+);
+
+-- down
+DROP TABLE IF EXISTS usage_daily;
+DROP TABLE IF EXISTS bucket_scans;
+DROP TABLE IF EXISTS audit_events;
+DROP TABLE IF EXISTS storage_accounts;

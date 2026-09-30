@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/puppe1990/amarra-cais/pkg/cais/devlog"
 	"github.com/puppe1990/amarra-cais/pkg/cais/session"
@@ -19,16 +20,57 @@ import (
 
 var ErrEmailTaken = errors.New("email already registered")
 
+// AuditFilter narrows audit log listings.
+type AuditFilter struct {
+	Action string
+	Status int
+	Query  string
+	Limit  int
+	Offset int
+}
+
+// AuditDayCount is one day of console activity (analytics sparkline).
+type AuditDayCount struct {
+	Day   time.Time
+	Count int64
+}
+
+// AuditStatusCount aggregates audit events by HTTP-style status.
+type AuditStatusCount struct {
+	Status int
+	Count  int64
+}
+
+// BucketUsage is the latest scan of one bucket.
+type BucketUsage struct {
+	Objects   int64
+	Bytes     int64
+	ScannedAt time.Time
+}
+
 type Store interface {
-	InsertContact(contact models.Contact) (int64, error)
-	FindContact(id int64) (models.Contact, error)
-	CountContacts() (int64, error)
 	FindUserByEmail(email string) (models.User, error)
+	FindUserByID(id int64) (models.User, error)
 	CreateUser(email, passwordHash string) (int64, error)
 	CreatePasswordResetToken(userID int64) (string, error)
 	ClearPasswordResetTokens(userID int64) error
 	FindPasswordResetUserID(token string) (int64, bool)
 	ResetPasswordWithToken(token, passwordHash string) error
+	CreateStorageAccount(account models.StorageAccount, secret string) (int64, error)
+	ListStorageAccounts() ([]models.StorageAccount, error)
+	FindStorageAccountByID(id int64) (models.StorageAccount, error)
+	ActiveStorageAccount() (models.StorageAccount, bool, error)
+	StorageAccountSecret(id int64) (string, error)
+	SetActiveStorageAccount(id int64) error
+	DeleteStorageAccount(id int64) error
+	InsertAuditEvent(event models.AuditEvent) (int64, error)
+	ListAuditEvents(filter AuditFilter) ([]models.AuditEvent, error)
+	CountAuditEvents(filter AuditFilter) (int64, error)
+	AuditDailyCounts(since time.Time) ([]AuditDayCount, error)
+	AuditStatusCounts(since time.Time) ([]AuditStatusCount, error)
+	UpsertBucketScan(bucket string, objects, bytes int64) error
+	BucketScans() (map[string]BucketUsage, error)
+	UsageHistory(days int) ([]models.UsagePoint, error)
 	Sessions() session.Store
 	Ping() error
 	DB() *sql.DB
@@ -88,37 +130,6 @@ func seedAuthData(db *sql.DB, env string) error {
 	return err
 }
 
-func (s *SQLiteStore) InsertContact(contact models.Contact) (int64, error) {
-	result, err := s.db.Exec(
-		"INSERT INTO contacts (name, email) VALUES (?, ?)",
-		contact.Name, contact.Email,
-	)
-	if err != nil {
-		return 0, fmt.Errorf("insert contact: %w", err)
-	}
-	return result.LastInsertId()
-}
-
-func (s *SQLiteStore) FindContact(id int64) (models.Contact, error) {
-	var c models.Contact
-	err := s.db.QueryRow(
-		"SELECT id, name, email, created_at FROM contacts WHERE id = ?",
-		id,
-	).Scan(&c.ID, &c.Name, &c.Email, &c.CreatedAt)
-	if err != nil {
-		return models.Contact{}, fmt.Errorf("find contact: %w", err)
-	}
-	return c, nil
-}
-
-func (s *SQLiteStore) CountContacts() (int64, error) {
-	var count int64
-	err := s.db.QueryRow("SELECT COUNT(*) FROM contacts").Scan(&count)
-	if err != nil {
-		return 0, fmt.Errorf("count contacts: %w", err)
-	}
-	return count, nil
-}
 
 func (s *SQLiteStore) FindUserByEmail(email string) (models.User, error) {
 	var u models.User
