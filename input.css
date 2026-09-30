@@ -143,6 +143,18 @@
     display: none;
   }
 
+  /* Amarra Drive paints its loading chrome inline with the scaffold copper
+     (amarra.js); repaint the bar and the spinner with the console palette so
+     they follow the theme. Inline styles need !important to be overridden. */
+  #amarra-progress {
+    background: rgb(var(--cs-primary-container)) !important;
+  }
+
+  #amarra-veil > div {
+    border-color: rgb(var(--cs-primary-container) / 0.25) !important;
+    border-top-color: rgb(var(--cs-primary-container)) !important;
+  }
+
   body {
     @apply bg-surface font-sans text-on-surface antialiased;
   }
