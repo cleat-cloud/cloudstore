@@ -1,0 +1,13 @@
+{{ define "content" }}
+<div class="w-full max-w-md mx-auto border border-copper/45 bg-ink/70 p-6 md:p-7 shadow-[10px_10px_0_0_rgba(201,137,58,0.22)]">
+  <div class="mb-5 pb-4 border-b border-foam/10">
+    <h2 class="font-serif text-2xl text-foam">{{ t "contact.heading" }}</h2>
+    <p class="mt-1 font-mono text-[11px] uppercase tracking-[0.22em] text-copper">{{ t "contact.title" }}</p>
+  </div>
+  <.form action="/contact" method="post">
+    <.input name="name" label="{{ t "contact.name_label" }}" value="{{ .Name }}" error="{{ fieldError .Errors "name" }}" />
+    <.input name="email" type="email" label="{{ t "contact.email_label" }}" value="{{ .Email }}" error="{{ fieldError .Errors "email" }}" />
+    <.button type="submit">{{ t "contact.submit" }}</.button>
+  </.form>
+</div>
+{{ end }}
