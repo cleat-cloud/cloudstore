@@ -1,0 +1,325 @@
+{{ define "content" }}
+{{ $vm := .VM }}
+<div class="flex flex-col gap-space-lg">
+  <!-- Header -->
+  <div class="flex flex-col gap-space-sm">
+    <div class="flex items-center gap-2 font-code-sm text-code-sm text-outline">
+      <span class="material-symbols-outlined text-sm leading-none text-primary">database</span>
+      <a href="/buckets" class="transition-colors hover:text-on-surface">CloudStore</a>
+      <span class="text-outline-variant">/</span>
+      <span class="transition-colors hover:text-on-surface">buckets</span>
+      <span class="text-outline-variant">/</span>
+      <span class="flex items-center gap-1.5 rounded-lg bg-surface-container-high px-2 py-0.5 font-semibold text-on-surface shadow-sm">
+        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-secondary"></span>
+        {{ $vm.Bucket }}
+      </span>
+    </div>
+    <div class="flex flex-col justify-between gap-space-md md:flex-row md:items-center">
+      <div>
+        <div class="flex items-center gap-3">
+          <h1 class="font-headline-lg text-headline-lg text-on-surface">{{ t "policies.title" }}</h1>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-surface-container-high px-2.5 py-1 font-label-sm text-label-sm text-secondary shadow-sm">
+            <span class="material-symbols-outlined text-sm leading-none text-secondary">verified_user</span>
+            {{ t "policies.badge" }}
+          </span>
+        </div>
+        <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">{{ t "policies.subtitle" $vm.Bucket }}</p>
+      </div>
+      <div class="flex items-center gap-2 rounded-lg bg-surface-container p-1.5 shadow-sm">
+        <div class="flex flex-col rounded bg-surface-container-low px-3 py-1">
+          <span class="font-label-sm text-label-sm text-outline">{{ t "policies.metric.size" }}</span>
+          <span class="font-code-sm text-code-sm font-semibold text-on-surface">{{ if $vm.Size }}{{ $vm.Size }}{{ else }}—{{ end }}</span>
+        </div>
+        <div class="flex flex-col rounded bg-surface-container-low px-3 py-1">
+          <span class="font-label-sm text-label-sm text-outline">{{ t "policies.metric.class" }}</span>
+          <span class="font-label-sm text-label-sm font-semibold text-secondary">{{ $vm.Class }}</span>
+        </div>
+        <div class="flex flex-col rounded bg-surface-container-low px-3 py-1">
+          <span class="font-label-sm text-label-sm text-outline">{{ t "policies.metric.region" }}</span>
+          <span class="font-code-sm text-code-sm font-semibold text-primary">{{ if $vm.Region }}{{ $vm.Region }}{{ else }}—{{ end }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{ if $vm.Error }}
+  <div class="flex items-start gap-2 rounded-lg border border-error/40 bg-error-container/20 px-3 py-2 font-body-sm text-body-sm text-error" role="alert">
+    <span class="material-symbols-outlined text-base leading-none">error</span>
+    <span>{{ $vm.Error }}</span>
+  </div>
+  {{ end }}
+  {{ if $vm.FormError }}
+  <div class="flex items-start gap-2 rounded-lg border border-tertiary/40 bg-tertiary-container/20 px-3 py-2 font-body-sm text-body-sm text-tertiary" role="alert">
+    <span class="material-symbols-outlined text-base leading-none">warning</span>
+    <span>{{ $vm.FormError }}</span>
+  </div>
+  {{ end }}
+
+  <!-- Tabs -->
+  <div class="flex items-center gap-1 overflow-x-auto rounded-lg bg-surface-container-low p-1 shadow-sm">
+    <a href="?tab=lifecycle" class="flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 font-label-md text-label-md transition-all {{ if eq $vm.Tab "lifecycle" }}bg-primary-container font-semibold text-on-primary-container shadow-sm{{ else }}text-on-surface-variant hover:bg-surface-container hover:text-on-surface{{ end }}">
+      <span class="material-symbols-outlined text-base leading-none">auto_delete</span>
+      {{ t "policies.tab.lifecycle" }}
+    </a>
+    <a href="?tab=cors" class="flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 font-label-md text-label-md transition-all {{ if eq $vm.Tab "cors" }}bg-primary-container font-semibold text-on-primary-container shadow-sm{{ else }}text-on-surface-variant hover:bg-surface-container hover:text-on-surface{{ end }}">
+      <span class="material-symbols-outlined text-base leading-none">sync_alt</span>
+      {{ t "policies.tab.cors" }}
+    </a>
+    <a href="?tab=encryption" class="flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 font-label-md text-label-md transition-all {{ if eq $vm.Tab "encryption" }}bg-primary-container font-semibold text-on-primary-container shadow-sm{{ else }}text-on-surface-variant hover:bg-surface-container hover:text-on-surface{{ end }}">
+      <span class="material-symbols-outlined text-base leading-none">lock</span>
+      {{ t "policies.tab.encryption" }}
+    </a>
+    <a href="?tab=access" class="flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 font-label-md text-label-md transition-all {{ if eq $vm.Tab "access" }}bg-primary-container font-semibold text-on-primary-container shadow-sm{{ else }}text-on-surface-variant hover:bg-surface-container hover:text-on-surface{{ end }}">
+      <span class="material-symbols-outlined text-base leading-none">history</span>
+      {{ t "policies.tab.access" }}
+    </a>
+  </div>
+
+  {{ if eq $vm.Tab "lifecycle" }}
+  <div class="flex flex-col justify-between gap-space-md rounded-xl bg-surface-container p-space-lg shadow-md">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-xl text-primary">rebase_edit</span>
+        <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "policies.lifecycle.title" }}</h2>
+      </div>
+      <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">{{ t "policies.lifecycle.body" }}</p>
+    </div>
+
+    <form action="/buckets/{{ $vm.Bucket }}/settings/lifecycle" method="post" class="flex flex-col gap-space-md">
+      {{ csrfField .CSRFToken }}
+      <div class="overflow-x-auto rounded-lg bg-surface-container-lowest shadow-inner">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="bg-surface-container-high/80 font-label-sm text-label-sm text-outline">
+              <th class="px-3 py-2.5">{{ t "policies.lifecycle.rule" }}</th>
+              <th class="px-3 py-2.5">{{ t "policies.lifecycle.hide" }}</th>
+              <th class="px-3 py-2.5">{{ t "policies.lifecycle.delete" }}</th>
+              <th class="px-3 py-2.5 text-right">{{ t "buckets.table.actions" }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-surface-container text-body-sm text-body-sm text-on-surface">
+            {{ range $vm.Lifecycle }}
+            <tr class="transition-colors hover:bg-surface-container-high/50">
+              <td class="px-3 py-2.5">
+                <input name="rule_prefix" value="{{ .Prefix }}" class="h-8 w-full rounded bg-surface-container px-2 font-code-sm text-code-sm text-on-surface focus:bg-surface-container-high focus:outline-none" />
+              </td>
+              <td class="px-3 py-2.5">
+                <input name="rule_hide" value="{{ .HideDays }}" type="number" min="0" class="h-8 w-24 rounded bg-surface-container px-2 font-code-sm text-code-sm text-on-surface focus:bg-surface-container-high focus:outline-none" />
+                <span class="ml-2 font-label-sm text-label-sm text-secondary">{{ .HideLabel }}</span>
+              </td>
+              <td class="px-3 py-2.5">
+                <input name="rule_delete" value="{{ .DeleteDays }}" type="number" min="0" class="h-8 w-24 rounded bg-surface-container px-2 font-code-sm text-code-sm text-on-surface focus:bg-surface-container-high focus:outline-none" />
+                <span class="ml-2 font-label-sm text-label-sm text-tertiary">{{ .DeleteLabel }}</span>
+              </td>
+              <td class="px-3 py-2.5 text-right">
+                <button type="button" onclick="this.closest('tr').remove()" class="rounded p-1 text-outline transition-colors hover:bg-error-container/40 hover:text-error" title="{{ t "policies.lifecycle.remove" }}">
+                  <span class="material-symbols-outlined text-base leading-none">delete</span>
+                </button>
+              </td>
+            </tr>
+            {{ else }}
+            <tr>
+              <td colspan="4" class="px-3 py-6 text-center font-body-sm text-body-sm text-outline">{{ t "policies.lifecycle.none" }}</td>
+            </tr>
+            {{ end }}
+            <tr class="bg-surface-container-low/40">
+              <td class="px-3 py-2.5">
+                <input name="rule_prefix" placeholder="{{ t "policies.lifecycle.prefix" }}" class="h-8 w-full rounded bg-surface-container px-2 font-code-sm text-code-sm text-on-surface placeholder:text-outline focus:bg-surface-container-high focus:outline-none" />
+              </td>
+              <td class="px-3 py-2.5">
+                <input name="rule_hide" type="number" min="0" placeholder="30" class="h-8 w-24 rounded bg-surface-container px-2 font-code-sm text-code-sm text-on-surface placeholder:text-outline focus:bg-surface-container-high focus:outline-none" />
+              </td>
+              <td class="px-3 py-2.5">
+                <input name="rule_delete" type="number" min="0" placeholder="180" class="h-8 w-24 rounded bg-surface-container px-2 font-code-sm text-code-sm text-on-surface placeholder:text-outline focus:bg-surface-container-high focus:outline-none" />
+              </td>
+              <td class="px-3 py-2.5 text-right">
+                <span class="font-label-sm text-label-sm text-primary">+ {{ t "policies.lifecycle.new" }}</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="font-body-sm text-body-sm text-outline">{{ t "policies.audit.badge" }}</span>
+        <button type="submit" class="flex h-8 items-center gap-1.5 rounded-lg bg-primary-container px-space-md font-label-md text-label-md font-semibold text-on-primary-container shadow-md transition-opacity hover:opacity-95">
+          <span class="material-symbols-outlined text-base">save</span>
+          {{ t "policies.lifecycle.save" }}
+        </button>
+      </div>
+    </form>
+  </div>
+  {{ end }}
+
+  {{ if eq $vm.Tab "cors" }}
+  <div class="flex flex-col justify-between gap-space-md rounded-xl bg-surface-container p-space-lg shadow-md">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-xl text-primary">language</span>
+        <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "policies.cors.title" }}</h2>
+      </div>
+      <span class="rounded bg-surface-container-high px-2.5 py-1 font-label-sm text-label-sm text-on-surface">{{ t "policies.cors.format" }}</span>
+    </div>
+    <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "policies.cors.body" }}</p>
+    <form action="/buckets/{{ $vm.Bucket }}/settings/cors" method="post" class="flex flex-col gap-space-sm">
+      {{ csrfField .CSRFToken }}
+      <div class="overflow-hidden rounded-lg bg-surface-container-lowest shadow-inner">
+        <div class="flex items-center gap-2 bg-surface-container-high/60 px-3 py-1.5 font-code-sm text-code-sm text-outline">
+          <span class="h-2.5 w-2.5 rounded-full bg-error/80"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-tertiary/80"></span>
+          <span class="h-2.5 w-2.5 rounded-full bg-secondary/80"></span>
+          <span class="ml-2 text-on-surface-variant">cors-configuration.json</span>
+        </div>
+        <textarea name="cors_json" rows="12" spellcheck="false" class="block w-full resize-y bg-transparent p-3 font-code-sm text-code-sm leading-relaxed text-on-surface focus:outline-none" placeholder='[
+  {
+    "corsRuleName": "downloadFromAnyOrigin",
+    "allowedOrigins": ["https://app.example.com"],
+    "allowedOperations": ["b2_download_file_by_name"],
+    "allowedHeaders": ["authorization"],
+    "exposeHeaders": ["x-bz-content-sha1"],
+    "maxAgeSeconds": 3600
+  }
+]'>{{ $vm.CORSJSON }}</textarea>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="flex items-center gap-1.5 font-body-sm text-body-sm text-secondary">
+          <span class="material-symbols-outlined text-sm">done_all</span>
+          {{ t "policies.cors.hint" }}
+        </span>
+        <button type="submit" class="flex h-8 items-center gap-1.5 rounded-lg bg-primary-container px-space-md font-label-md text-label-md font-semibold text-on-primary-container shadow-md transition-opacity hover:opacity-95">
+          <span class="material-symbols-outlined text-base">save</span>
+          {{ t "policies.cors.save" }}
+        </button>
+      </div>
+    </form>
+  </div>
+  {{ end }}
+
+  {{ if eq $vm.Tab "encryption" }}
+  <div class="grid grid-cols-1 gap-space-lg xl:grid-cols-12">
+    <div class="flex flex-col justify-between gap-space-md rounded-xl bg-surface-container p-space-lg shadow-md xl:col-span-7">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-xl text-primary">enhanced_encryption</span>
+          <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "policies.encryption.title" }}</h2>
+        </div>
+        <span class="inline-flex items-center gap-1.5 rounded bg-surface-container-lowest px-2 py-0.5 font-label-sm text-label-sm text-secondary shadow-sm">
+          <span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>
+          {{ t "policies.encryption.badge" }}
+        </span>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "policies.encryption.body" }}</p>
+      <div class="divide-y divide-surface-container/60 rounded bg-surface-container-lowest font-body-sm text-body-sm">
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.encryption.mode" }}</span>
+          <span class="font-code-sm text-code-sm font-semibold text-on-surface">{{ $vm.Encryption }}</span>
+        </div>
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.encryption.algorithm" }}</span>
+          <span class="font-code-sm text-code-sm text-on-surface">AES-256</span>
+        </div>
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.encryption.retention" }}</span>
+          <span class="font-code-sm text-code-sm {{ if $vm.RetentionOn }}text-secondary{{ else }}text-outline{{ end }}">{{ $vm.Retention }}</span>
+        </div>
+      </div>
+      <p class="font-body-sm text-body-sm text-outline">{{ t "policies.encryption.hint" }}</p>
+    </div>
+
+    <div class="flex flex-col justify-between gap-space-md rounded-xl bg-surface-container p-space-lg shadow-md xl:col-span-5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-xl text-primary">shield_lock</span>
+          <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "policies.access.title" }}</h2>
+        </div>
+        <span class="inline-flex items-center gap-1.5 rounded bg-surface-container-lowest px-2 py-0.5 font-label-sm text-label-sm {{ if $vm.Public }}text-tertiary{{ else }}text-secondary{{ end }} shadow-sm">
+          <span class="h-1.5 w-1.5 rounded-full {{ if $vm.Public }}bg-tertiary{{ else }}bg-secondary{{ end }}"></span>
+          {{ if $vm.Public }}{{ t "policies.access.badge_public" }}{{ else }}{{ t "policies.access.badge_private" }}{{ end }}
+        </span>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">
+        {{ if $vm.Public }}{{ t "policies.access.public_body" }}{{ else }}{{ t "policies.access.private_body" }}{{ end }}
+      </p>
+      <div class="rounded-lg bg-surface-container-high p-3 shadow-inner">
+        <span class="material-symbols-outlined text-base text-secondary">verified</span>
+        <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">{{ t "policies.access.note" }}</p>
+      </div>
+      <div class="divide-y divide-surface-container/60 rounded bg-surface-container-lowest font-body-sm text-body-sm">
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.access.versioning" }}</span>
+          <span class="font-label-sm text-label-sm font-semibold text-secondary">{{ $vm.Versioning }}</span>
+        </div>
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.access.filelock" }}</span>
+          <span class="font-label-sm text-label-sm {{ if $vm.FileLock }}font-semibold text-secondary{{ else }}text-outline{{ end }}">{{ if $vm.FileLock }}{{ t "policies.access.on" }}{{ else }}{{ t "policies.access.off" }}{{ end }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{ end }}
+
+  {{ if eq $vm.Tab "access" }}
+  <div class="grid grid-cols-1 gap-space-lg xl:grid-cols-12">
+    <div class="flex flex-col gap-space-md rounded-xl bg-surface-container p-space-lg shadow-md xl:col-span-5">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-xl text-primary">shield_lock</span>
+          <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "policies.access.title" }}</h2>
+        </div>
+        <span class="inline-flex items-center gap-1.5 rounded bg-surface-container-lowest px-2 py-0.5 font-label-sm text-label-sm {{ if $vm.Public }}text-tertiary{{ else }}text-secondary{{ end }} shadow-sm">
+          <span class="h-1.5 w-1.5 rounded-full {{ if $vm.Public }}bg-tertiary{{ else }}bg-secondary{{ end }}"></span>
+          {{ if $vm.Public }}{{ t "policies.access.badge_public" }}{{ else }}{{ t "policies.access.badge_private" }}{{ end }}
+        </span>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">
+        {{ if $vm.Public }}{{ t "policies.access.public_body" }}{{ else }}{{ t "policies.access.private_body" }}{{ end }}
+      </p>
+      <div class="rounded-lg bg-surface-container-high p-3 shadow-inner">
+        <span class="material-symbols-outlined text-base text-secondary">verified</span>
+        <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">{{ t "policies.access.note" }}</p>
+      </div>
+    </div>
+    <div class="flex flex-col gap-space-md rounded-xl bg-surface-container p-space-lg shadow-md xl:col-span-7">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-xl text-primary">history</span>
+        <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "policies.access.versioning" }} · {{ t "policies.access.filelock" }}</h2>
+      </div>
+      <div class="divide-y divide-surface-container/60 rounded bg-surface-container-lowest font-body-sm text-body-sm">
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.access.versioning" }}</span>
+          <span class="font-label-sm text-label-sm font-semibold text-secondary">{{ $vm.Versioning }}</span>
+        </div>
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.access.filelock" }}</span>
+          <span class="font-label-sm text-label-sm {{ if $vm.FileLock }}font-semibold text-secondary{{ else }}text-outline{{ end }}">{{ if $vm.FileLock }}{{ t "policies.access.on" }}{{ else }}{{ t "policies.access.off" }}{{ end }}</span>
+        </div>
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.encryption.retention" }}</span>
+          <span class="font-code-sm text-code-sm {{ if $vm.RetentionOn }}text-secondary{{ else }}text-outline{{ end }}">{{ $vm.Retention }}</span>
+        </div>
+        <div class="flex items-center justify-between p-2.5">
+          <span class="text-outline">{{ t "policies.encryption.mode" }}</span>
+          <span class="font-code-sm text-code-sm text-on-surface">{{ $vm.Encryption }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{ end }}
+
+  <!-- Audit banner -->
+  <div class="relative flex flex-col items-center justify-between gap-space-lg overflow-hidden rounded-xl bg-surface-container p-space-lg shadow-md md:flex-row">
+    <div class="z-10 flex items-center gap-space-md">
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-surface-container-lowest text-primary shadow-inner">
+        <span class="material-symbols-outlined text-2xl">security_update_good</span>
+      </div>
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2">
+          <span class="font-headline-sm text-headline-sm text-on-surface">{{ t "policies.audit.title" }}</span>
+          <span class="rounded bg-surface-container-lowest px-2 py-0.5 font-label-sm text-label-sm text-secondary">{{ t "policies.audit.badge" }}</span>
+        </div>
+        <p class="mt-0.5 max-w-xl font-body-sm text-body-sm text-on-surface-variant">{{ t "policies.audit.body" "/audit" }}</p>
+        <a href="/audit" class="mt-1 font-label-sm text-label-sm text-primary hover:underline">{{ t "nav.audit" }} →</a>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}

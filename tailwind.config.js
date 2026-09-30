@@ -110,10 +110,22 @@ module.exports = {
         "code-sm": ['"JetBrains Mono"', "ui-monospace", "monospace"],
       },
       fontSize: {
-        "headline-xl": ["28px", { lineHeight: "36px", letterSpacing: "-0.02em", fontWeight: "600" }],
-        "headline-lg": ["22px", { lineHeight: "28px", letterSpacing: "-0.015em", fontWeight: "600" }],
-        "headline-md": ["18px", { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" }],
-        "headline-sm": ["15px", { lineHeight: "20px", letterSpacing: "-0.005em", fontWeight: "600" }],
+        "headline-xl": [
+          "28px",
+          { lineHeight: "36px", letterSpacing: "-0.02em", fontWeight: "600" },
+        ],
+        "headline-lg": [
+          "22px",
+          { lineHeight: "28px", letterSpacing: "-0.015em", fontWeight: "600" },
+        ],
+        "headline-md": [
+          "18px",
+          { lineHeight: "24px", letterSpacing: "-0.01em", fontWeight: "600" },
+        ],
+        "headline-sm": [
+          "15px",
+          { lineHeight: "20px", letterSpacing: "-0.005em", fontWeight: "600" },
+        ],
         "body-lg": ["14px", { lineHeight: "20px", fontWeight: "400" }],
         "body-md": ["13px", { lineHeight: "18px", fontWeight: "400" }],
         "body-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }],

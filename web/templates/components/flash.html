@@ -1,3 +1,10 @@
 {{ if .Flash }}
-<div class="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-slate-800" role="status">{{ with flashMessage .Flash }}{{ . }}{{ else }}{{ .Flash }}{{ end }}</div>
+{{ $kind := .Flash.Kind }}
+<div
+  class="flex items-start gap-2 rounded-lg border px-3 py-2 font-body-sm text-body-sm shadow-md {{ if eq $kind "error" }}border-error/40 bg-error-container/30 text-error{{ else if eq $kind "warning" }}border-tertiary/40 bg-tertiary-container/25 text-tertiary{{ else }}border-secondary/40 bg-secondary-container/20 text-secondary{{ end }}"
+  role="status"
+>
+  <span class="material-symbols-outlined text-base leading-none">{{ if eq $kind "error" }}error{{ else if eq $kind "warning" }}warning{{ else }}check_circle{{ end }}</span>
+  <span>{{ with flashMessage .Flash }}{{ . }}{{ else }}{{ .Flash }}{{ end }}</span>
+</div>
 {{ end }}

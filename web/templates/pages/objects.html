@@ -1,0 +1,342 @@
+{{ define "content" }}
+{{ $vm := .VM }}
+{{ $detailKey := "" }}{{ with $vm.Detail }}{{ $detailKey = .Key }}{{ end }}
+<div class="flex flex-col gap-space-md">
+  <!-- Breadcrumb + bucket metadata -->
+  <div class="flex flex-col gap-space-sm">
+    <div class="flex flex-wrap items-center justify-between gap-space-sm rounded-lg bg-surface-container-lowest p-space-sm shadow-sm">
+      <nav class="flex flex-wrap items-center gap-1 font-body-sm text-body-sm text-outline" aria-label="Breadcrumb">
+        {{ range $vm.Breadcrumbs }}
+        <span class="material-symbols-outlined text-xs text-outline-variant">chevron_right</span>
+        {{ if .Href }}
+        <a href="{{ .Href }}" class="flex items-center gap-1 font-code-sm text-code-sm text-on-surface-variant transition-colors hover:text-primary">{{ .Label }}</a>
+        {{ else }}
+        <span class="inline-flex items-center gap-1 rounded bg-surface-container px-2 py-0.5 font-code-sm text-code-sm font-semibold text-on-surface">
+          <span class="material-symbols-outlined text-sm text-primary">folder_open</span>
+          {{ .Label }}
+        </span>
+        {{ end }}
+        {{ end }}
+      </nav>
+      <div class="flex items-center gap-space-sm">
+        <span class="inline-flex items-center gap-1.5 rounded bg-surface-container px-2 py-0.5 font-label-sm text-label-sm text-on-surface-variant">
+          <span class="h-1.5 w-1.5 rounded-full {{ if $vm.IsPublic }}bg-tertiary{{ else }}bg-secondary{{ end }}"></span>
+          {{ t "objects.acl" }}
+        </span>
+      </div>
+    </div>
+
+    {{ if $vm.Error }}
+    <div class="flex items-start gap-2 rounded-lg border border-error/40 bg-error-container/20 px-3 py-2 font-body-sm text-body-sm text-error" role="alert">
+      <span class="material-symbols-outlined text-base leading-none">error</span>
+      <span>{{ $vm.Error }}</span>
+    </div>
+    {{ end }}
+
+    <div class="grid grid-cols-2 gap-space-sm rounded-lg bg-surface-container-low p-space-md shadow-sm md:grid-cols-4">
+      <div class="flex items-center gap-space-sm">
+        <div class="flex h-8 w-8 items-center justify-center rounded bg-surface-container text-primary">
+          <span class="material-symbols-outlined text-base">public</span>
+        </div>
+        <div class="flex min-w-0 flex-col">
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "objects.meta.region" }}</span>
+          <span class="truncate font-code-sm text-code-sm font-medium text-on-surface">{{ if $vm.Region }}{{ $vm.Region }}{{ else }}—{{ end }}</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-space-sm">
+        <div class="flex h-8 w-8 items-center justify-center rounded bg-surface-container text-secondary">
+          <span class="material-symbols-outlined text-base">layers</span>
+        </div>
+        <div class="flex min-w-0 flex-col">
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "objects.meta.class" }}</span>
+          <span class="truncate font-code-sm text-code-sm font-medium text-on-surface">{{ $vm.Class }}</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-space-sm">
+        <div class="flex h-8 w-8 items-center justify-center rounded bg-surface-container text-tertiary">
+          <span class="material-symbols-outlined text-base">history_toggle_off</span>
+        </div>
+        <div class="flex min-w-0 flex-col">
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "objects.meta.versioning" }}</span>
+          <span class="inline-flex items-center gap-1 font-label-sm text-label-sm font-semibold text-secondary">
+            <span class="h-1.5 w-1.5 rounded-full bg-secondary"></span> {{ $vm.Versioning }}
+          </span>
+        </div>
+      </div>
+      <div class="flex items-center gap-space-sm">
+        <div class="flex h-8 w-8 items-center justify-center rounded bg-surface-container text-primary">
+          <span class="material-symbols-outlined text-base">key</span>
+        </div>
+        <div class="flex min-w-0 flex-col">
+          <span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "objects.meta.encryption" }}</span>
+          <span class="truncate font-code-sm text-code-sm text-on-surface">{{ $vm.Encryption }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="flex flex-wrap items-center justify-between gap-space-sm rounded-lg bg-surface-container p-space-sm shadow-sm">
+    <div class="flex flex-wrap items-center gap-space-xs">
+      <div amarra-hook="dialog">
+        <button type="button" data-amarra-dialog-open class="flex h-8 items-center gap-1.5 rounded bg-primary px-space-md font-label-md text-label-md font-semibold text-on-primary shadow transition-colors hover:bg-primary-fixed">
+          <span class="material-symbols-outlined text-base">cloud_upload</span>
+          <span>{{ t "objects.upload" }}</span>
+        </button>
+        <.modal>
+          <div class="border-b border-outline-variant/40 px-4 py-3">
+            <h2 class="font-headline-md text-headline-md text-on-surface">{{ t "objects.upload_file" }}</h2>
+          </div>
+          <form action="/buckets/{{ $vm.Bucket }}/objects?prefix={{ $vm.Prefix }}" method="post" enctype="multipart/form-data" data-amarra-skip>
+            {{ csrfField .CSRFToken }}
+            <input type="file" name="file" required class="block w-full cursor-pointer rounded border border-outline-variant/40 bg-surface-container-lowest px-3 py-2 font-body-sm text-body-sm text-on-surface file:mr-3 file:rounded file:border-0 file:bg-surface-container-high file:px-3 file:py-1.5 file:font-label-md file:text-label-md file:text-on-surface" />
+            <p class="mt-2 font-body-sm text-body-sm text-outline">{{ t "objects.max_hint" }}</p>
+            <div class="mt-4 flex justify-end gap-space-sm">
+              <button type="button" data-amarra-dialog-close class="h-8 rounded-lg bg-surface-container-high px-4 font-label-md text-label-md text-on-surface transition-colors hover:bg-surface-container-highest">{{ t "buckets.modal.cancel" }}</button>
+              <.button type="submit">{{ t "objects.upload" }}</.button>
+            </div>
+          </form>
+        </.modal>
+      </div>
+      <div amarra-hook="dialog">
+        <button type="button" data-amarra-dialog-open class="flex h-8 items-center gap-1.5 rounded bg-surface-container-high px-space-md font-label-md text-label-md text-on-surface transition-colors hover:bg-surface-bright">
+          <span class="material-symbols-outlined text-base text-outline">create_new_folder</span>
+          <span>{{ t "objects.new_folder" }}</span>
+        </button>
+        <.modal>
+          <div class="border-b border-outline-variant/40 px-4 py-3">
+            <h2 class="font-headline-md text-headline-md text-on-surface">{{ t "objects.new_folder" }}</h2>
+          </div>
+          <form action="/buckets/{{ $vm.Bucket }}/objects/folder?prefix={{ $vm.Prefix }}" method="post" class="px-4 py-4" data-amarra-skip>
+            {{ csrfField .CSRFToken }}
+            <.input name="folder" label="{{ t "objects.new_folder" }}" placeholder="{{ t "objects.folder_placeholder" }}" />
+            <div class="mt-4 flex justify-end gap-space-sm">
+              <button type="button" data-amarra-dialog-close class="h-8 rounded-lg bg-surface-container-high px-4 font-label-md text-label-md text-on-surface transition-colors hover:bg-surface-container-highest">{{ t "buckets.modal.cancel" }}</button>
+              <.button type="submit">{{ t "objects.new_folder" }}</.button>
+            </div>
+          </form>
+        </.modal>
+      </div>
+    </div>
+    <form action="/buckets/{{ $vm.Bucket }}/objects" method="get" class="flex flex-1 items-center justify-end gap-space-sm md:max-w-md">
+      <input type="hidden" name="prefix" value="{{ $vm.Prefix }}" />
+      <div class="relative w-full sm:w-64">
+        <span class="material-symbols-outlined pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-base text-outline">filter_alt</span>
+        <input name="q" value="{{ .SearchQuery }}" type="text" placeholder="{{ t "objects.search" }}" class="h-8 w-full rounded bg-surface-container-lowest pl-8 pr-space-md font-body-sm text-body-sm text-on-surface placeholder:text-outline transition-all focus:bg-surface-container-low focus:outline-none" />
+      </div>
+      <button type="submit" class="h-8 rounded bg-surface-container-high px-space-md font-label-sm text-label-sm text-on-surface transition-colors hover:bg-surface-bright">{{ t "buckets.filter.apply" }}</button>
+    </form>
+  </div>
+
+  <!-- Explorer grid -->
+  <div class="grid grid-cols-1 items-start gap-space-md xl:grid-cols-12">
+    <div amarra-hook="bulk" class="flex flex-col overflow-hidden rounded-lg bg-surface-container-low shadow-sm xl:col-span-8">
+      <div class="flex items-center justify-between bg-surface-container-lowest/60 p-space-sm font-label-sm text-label-sm text-outline">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-sm text-primary">cloud_sync</span>
+          <span>{{ t "objects.drag_hint" }}</span>
+        </div>
+        <span class="hidden font-code-sm text-code-sm text-outline sm:inline">{{ t "objects.max_hint" }}</span>
+      </div>
+
+      <div data-amarra-bulk-bar hidden class="flex items-center justify-between border-b border-surface-bright/40 bg-surface-container px-3 py-2">
+        <span class="font-label-sm text-label-sm text-on-surface"><span data-amarra-bulk-count>0</span> selecionados</span>
+        <button type="submit" form="bulk-delete" class="flex h-7 items-center gap-1 rounded bg-error-container/40 px-2 font-label-sm text-label-sm text-error transition-colors hover:bg-error-container hover:text-on-error-container">
+          <span class="material-symbols-outlined text-base">delete</span>
+          {{ t "objects.delete_selected" }}
+        </button>
+      </div>
+      <form id="bulk-delete" action="/buckets/{{ $vm.Bucket }}/objects/delete?prefix={{ $vm.Prefix }}" method="post" data-amarra-skip>{{ csrfField .CSRFToken }}</form>
+
+      <div class="w-full overflow-x-auto">
+        <table class="w-full border-collapse text-left font-body-sm text-body-sm">
+          <thead>
+            <tr class="h-8 select-none bg-surface-container-lowest font-label-sm text-label-sm uppercase tracking-wider text-outline">
+              <th class="w-8 px-3 py-1">
+                <input type="checkbox" data-amarra-bulk-all class="h-3.5 w-3.5 cursor-pointer rounded accent-primary" />
+              </th>
+              <th class="px-2 py-1 font-semibold">{{ t "objects.table.name" }}</th>
+              <th class="hidden px-2 py-1 font-semibold md:table-cell">{{ t "objects.table.type" }}</th>
+              <th class="hidden px-2 py-1 font-semibold lg:table-cell">{{ t "objects.table.class" }}</th>
+              <th class="px-2 py-1 text-right font-semibold">{{ t "objects.table.size" }}</th>
+              <th class="hidden px-2 py-1 font-semibold sm:table-cell">{{ t "objects.table.modified" }}</th>
+              <th class="hidden px-2 py-1 font-semibold md:table-cell">{{ t "objects.table.encryption" }}</th>
+              <th class="w-12 px-2 py-1 text-center">{{ t "objects.table.actions" }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-transparent">
+            {{ range $vm.Rows }}
+            <tr class="h-9 cursor-pointer transition-colors hover:bg-surface-container {{ if eq .Key $detailKey }}bg-surface-container shadow-inner{{ end }}">
+              <td class="px-3 py-1">
+                {{ if not .Folder }}
+                <input type="checkbox" form="bulk-delete" name="key" value="{{ .Key }}" data-amarra-bulk-row class="h-3.5 w-3.5 cursor-pointer rounded accent-primary" />
+                {{ end }}
+              </td>
+              <td class="flex items-center gap-2 px-2 py-1 font-medium text-on-surface">
+                <span class="material-symbols-outlined text-base {{ if .Folder }}text-tertiary{{ else }}text-primary{{ end }}">{{ .Icon }}</span>
+                {{ if .Folder }}
+                <a href="/buckets/{{ $vm.Bucket }}/objects?prefix={{ .Key }}" class="font-code-sm text-code-sm text-on-surface transition-colors hover:text-primary">{{ .Name }}</a>
+                {{ else }}
+                <a href="?prefix={{ $vm.Prefix }}{{ if .Name }}&q={{ $.SearchQuery }}{{ end }}&key={{ .Key }}" class="truncate font-code-sm text-code-sm text-on-surface transition-colors hover:text-primary">{{ .Name }}</a>
+                {{ end }}
+              </td>
+              <td class="hidden px-2 py-1 font-code-sm text-code-sm text-on-surface-variant md:table-cell">{{ .Type }}</td>
+              <td class="hidden px-2 py-1 lg:table-cell">
+                {{ if not .Folder }}
+                <span class="rounded bg-surface-container-lowest px-1.5 py-0.5 font-label-sm text-label-sm text-secondary">{{ .Class }}</span>
+                {{ else }}—{{ end }}
+              </td>
+              <td class="px-2 py-1 text-right font-code-sm text-code-sm text-on-surface-variant">{{ .Size }}</td>
+              <td class="hidden px-2 py-1 font-code-sm text-code-sm text-outline sm:table-cell">{{ .Modified }}</td>
+              <td class="hidden px-2 py-1 md:table-cell">
+                {{ if .Folder }}—{{ else }}<span class="font-label-sm text-label-sm text-outline">{{ $vm.Encryption }}</span>{{ end }}
+              </td>
+              <td class="px-2 py-1 text-center">
+                {{ if .Folder }}
+                <a href="/buckets/{{ $vm.Bucket }}/objects?prefix={{ .Key }}" class="inline-flex rounded p-1 text-outline transition-colors hover:bg-surface-container-high hover:text-on-surface">
+                  <span class="material-symbols-outlined text-base leading-none">arrow_forward</span>
+                </a>
+                {{ else }}
+                <a href="?prefix={{ $vm.Prefix }}{{ if $.SearchQuery }}&q={{ $.SearchQuery }}{{ end }}&key={{ .Key }}" class="inline-flex rounded p-1 text-outline transition-colors hover:bg-surface-container-high hover:text-on-surface">
+                  <span class="material-symbols-outlined text-base leading-none">info</span>
+                </a>
+                {{ end }}
+              </td>
+            </tr>
+            {{ else }}
+            <tr>
+              <td colspan="8" class="px-3 py-10 text-center">
+                <div class="flex flex-col items-center gap-2">
+                  <span class="material-symbols-outlined text-2xl text-outline">folder_open</span>
+                  <p class="font-headline-sm text-headline-sm text-on-surface">{{ t "objects.empty_title" }}</p>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "objects.empty_body" }}</p>
+                </div>
+              </td>
+            </tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-between gap-space-sm bg-surface-container-lowest p-space-sm font-label-sm text-label-sm text-outline">
+        <div class="flex items-center gap-space-md">
+          <span>{{ t "objects.showing" $vm.Total $vm.Total }}</span>
+          <span class="text-outline-variant">|</span>
+          <span>{{ t "objects.volume" }} <span class="font-code-sm text-code-sm text-on-surface">{{ $vm.VolumeLabel }}</span></span>
+        </div>
+        {{ if $vm.HasMore }}
+        <a href="?prefix={{ $vm.Prefix }}&cursor={{ $vm.NextCursor }}" class="rounded bg-surface-container px-2 py-1 text-on-surface transition-colors hover:bg-surface-container-high">{{ t "buckets.next" }}</a>
+        {{ end }}
+      </div>
+    </div>
+
+    <!-- Detail panel -->
+    <div class="flex flex-col gap-space-md rounded-lg bg-surface-container-low p-space-md shadow-sm xl:col-span-4">
+      {{ with $vm.Detail }}
+      <div class="flex items-start justify-between gap-space-sm rounded bg-surface-container-lowest/40 p-space-sm pb-space-sm">
+        <div class="flex min-w-0 items-center gap-2">
+          <span class="material-symbols-outlined text-xl text-primary">description</span>
+          <div class="flex min-w-0 flex-col">
+            <h2 class="truncate font-headline-sm text-headline-sm text-on-surface">{{ t "objects.detail.title" }}</h2>
+            <span class="truncate font-code-sm text-code-sm text-outline">{{ .URI }}</span>
+          </div>
+        </div>
+        <a href="?prefix={{ $vm.Prefix }}" class="rounded p-1 text-outline transition-colors hover:bg-surface-container hover:text-on-surface">
+          <span class="material-symbols-outlined text-base">close</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-2 gap-space-xs">
+        {{ if .DownloadURL }}
+        <a href="{{ .DownloadURL }}" class="col-span-2 flex h-8 items-center justify-center gap-1.5 rounded bg-primary px-space-sm font-label-sm text-label-sm font-semibold text-on-primary transition-colors hover:bg-primary-fixed">
+          <span class="material-symbols-outlined text-base">download</span>
+          {{ t "objects.detail.download" }}
+        </a>
+        <div amarra-hook="clipboard" data-amarra-copy="{{ .DownloadURL }}" class="flex h-8 cursor-pointer items-center justify-center gap-1.5 rounded bg-surface-container-high px-space-sm font-label-sm text-label-sm text-on-surface transition-colors hover:bg-surface-bright">
+          <span class="material-symbols-outlined text-base text-primary">link</span>
+          {{ t "objects.detail.copy" }}
+        </div>
+        {{ end }}
+        <div amarra-hook="clipboard" data-amarra-copy="{{ .URI }}" class="col-span-2 flex h-8 cursor-pointer items-center justify-center gap-1.5 rounded bg-surface-container-high px-space-sm font-label-sm text-label-sm text-on-surface transition-colors hover:bg-surface-bright">
+          <span class="material-symbols-outlined text-base text-secondary">terminal</span>
+          {{ t "objects.detail.copy_uri" }}
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-space-xs rounded-lg bg-surface-container-lowest p-space-sm shadow-inner">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1 font-label-sm text-label-sm font-semibold text-primary">
+            <span class="material-symbols-outlined text-sm">enhanced_encryption</span>
+            <span>{{ t "objects.presign.title" }}</span>
+          </div>
+          <span class="font-label-sm text-label-sm text-outline">{{ t "objects.presign.tag" }}</span>
+        </div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "objects.presign.body" }}</p>
+        <div class="flex items-center gap-space-xs pt-1">
+          <a href="?prefix={{ $vm.Prefix }}&key={{ .Key }}&sign=15" class="flex-1 rounded text-center font-label-sm text-label-sm {{ if eq $vm.PresignTTL 15 }}bg-primary font-semibold text-on-primary{{ else }}bg-surface-container py-1 text-on-surface-variant hover:text-on-surface{{ end }} py-1">{{ t "objects.presign.15m" }}</a>
+          <a href="?prefix={{ $vm.Prefix }}&key={{ .Key }}&sign=60" class="flex-1 rounded text-center font-label-sm text-label-sm {{ if eq $vm.PresignTTL 60 }}bg-primary font-semibold text-on-primary{{ else }}bg-surface-container py-1 text-on-surface-variant hover:text-on-surface{{ end }} py-1">{{ t "objects.presign.1h" }}</a>
+          <a href="?prefix={{ $vm.Prefix }}&key={{ .Key }}&sign=1440" class="flex-1 rounded text-center font-label-sm text-label-sm {{ if eq $vm.PresignTTL 1440 }}bg-primary font-semibold text-on-primary{{ else }}bg-surface-container py-1 text-on-surface-variant hover:text-on-surface{{ end }} py-1">{{ t "objects.presign.24h" }}</a>
+        </div>
+        {{ if $vm.PresignedURL }}
+        <div class="flex items-center gap-2 rounded bg-surface-container-low p-2">
+          <span class="min-w-0 flex-1 truncate font-code-sm text-code-sm text-secondary">{{ $vm.PresignedURL }}</span>
+          <div amarra-hook="clipboard" data-amarra-copy="{{ $vm.PresignedURL }}" class="shrink-0 cursor-pointer text-outline hover:text-on-surface">
+            <span class="material-symbols-outlined text-base">content_copy</span>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <span class="px-1 font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "objects.detail.technical" }}</span>
+        <div class="divide-y divide-surface-container/60 rounded bg-surface-container-lowest font-body-sm text-body-sm">
+          <div class="flex items-center justify-between p-2">
+            <span class="text-outline">{{ t "objects.detail.size" }}</span>
+            <div class="text-right">
+              <span class="font-code-sm text-code-sm font-semibold text-on-surface">{{ .SizeLabel }}</span>
+              <span class="block font-code-sm text-code-sm leading-tight text-outline">{{ .SizeBytes }} bytes</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between p-2">
+            <span class="text-outline">{{ t "objects.detail.etag" }}</span>
+            <span class="max-w-[170px] truncate font-code-sm text-code-sm text-on-surface" title="{{ .ETag }}">"{{ .ETag }}"</span>
+          </div>
+          <div class="flex items-center justify-between p-2">
+            <span class="text-outline">{{ t "objects.detail.mime" }}</span>
+            <span class="font-code-sm text-code-sm text-on-surface">{{ .ContentType }}</span>
+          </div>
+          <div class="flex items-center justify-between p-2">
+            <span class="text-outline">{{ t "objects.detail.cache" }}</span>
+            <span class="truncate font-code-sm text-code-sm text-on-surface">{{ if .CacheControl }}{{ .CacheControl }}{{ else }}—{{ end }}</span>
+          </div>
+          <div class="flex items-center justify-between p-2">
+            <span class="text-outline">{{ t "objects.detail.class" }}</span>
+            <span class="font-code-sm text-code-sm font-medium text-secondary">{{ .Class }}</span>
+          </div>
+        </div>
+      </div>
+
+      {{ if .Metadata }}
+      <div class="flex flex-col gap-1.5">
+        <span class="px-1 font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "objects.detail.metadata" }}</span>
+        <div class="flex flex-col gap-1 rounded bg-surface-container-lowest p-2">
+          {{ range .Metadata }}
+          <div class="flex items-center justify-between rounded bg-surface-container/40 px-2 py-1">
+            <span class="font-code-sm text-code-sm text-outline">{{ .Name }}</span>
+            <span class="truncate font-code-sm text-code-sm text-on-surface">{{ .Value }}</span>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+      {{ else }}
+      <div class="flex flex-col items-center gap-2 py-10 text-center">
+        <span class="material-symbols-outlined text-2xl text-outline">description</span>
+        <p class="font-headline-sm text-headline-sm text-on-surface">{{ t "objects.detail.title" }}</p>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "objects.detail.empty" }}</p>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+{{ end }}

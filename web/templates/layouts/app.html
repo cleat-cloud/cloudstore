@@ -85,7 +85,7 @@
     <img src="/static/icons/icon-192.png" alt="" class="h-9 w-9 rounded-lg" width="36" height="36" />
     <div class="min-w-0 flex-1">
       <p class="truncate font-headline-md text-headline-md tracking-tight text-on-surface">CloudStore</p>
-      <p class="font-label-sm text-label-sm uppercase tracking-[0.22em] text-outline">Storage Console</p>
+      <p class="truncate font-label-sm text-label-sm uppercase tracking-[0.22em] text-outline">{{ t "auth.console_subtitle" }}</p>
     </div>
     <button
       type="button"
@@ -94,7 +94,7 @@
       data-amarra-sidebar-target="#amarra-nav"
       aria-controls="amarra-nav"
       aria-expanded="true"
-      aria-label="Fechar menu"
+      aria-label="{{ t "layout.close_menu" }}"
     >
       <span class="material-symbols-outlined text-[20px]">close</span>
     </button>
@@ -102,51 +102,51 @@
 
   <div class="min-h-0 flex-1 overflow-y-auto px-3 py-4">
     <div class="mb-5 rounded-lg bg-surface-container p-3">
-      <p class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Project Context</p>
+      <p class="font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "layout.project_context" }}</p>
       {{ with .Account }}
       <div class="mt-1.5 flex items-center justify-between gap-2">
         <span class="truncate font-code-sm text-code-sm text-on-surface">{{ .Label }}</span>
         <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full {{ if .Healthy }}bg-secondary/10 text-secondary{{ else }}bg-tertiary/10 text-tertiary{{ end }} px-2 py-0.5 font-label-sm text-label-sm">
           <span class="h-1.5 w-1.5 rounded-full {{ if .Healthy }}bg-secondary{{ else }}bg-tertiary{{ end }}"></span>
-          {{ if .Healthy }}Active{{ else }}Offline{{ end }}
+          {{ if .Healthy }}{{ t "layout.active" }}{{ else }}{{ t "layout.offline" }}{{ end }}
         </span>
       </div>
       <p class="mt-1 truncate font-code-sm text-code-sm text-outline">{{ .Region }}</p>
       {{ else }}
-      <p class="mt-1.5 font-code-sm text-code-sm text-outline">Nenhuma conta configurada</p>
+      <p class="mt-1.5 font-code-sm text-code-sm text-outline">{{ t "layout.no_account" }}</p>
       {{ end }}
     </div>
 
     <nav amarra-hook="nav" data-amarra-nav-on="bg-primary-container/15 text-primary" data-amarra-nav-off="text-on-surface-variant hover:bg-surface-container hover:text-on-surface" class="flex flex-col gap-0.5">
-      <p class="px-3 pb-1 pt-2 font-label-sm text-label-sm uppercase tracking-wider text-outline">Core Storage</p>
-      {{ template "console_nav_item" (dict "href" "/buckets" "label" "Buckets Overview" "icon" "inventory_2" "key" "buckets" "active" .ActiveNav) }}
+      <p class="px-3 pb-1 pt-2 font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "nav.group.core" }}</p>
+      {{ template "console_nav_item" (dict "href" "/buckets" "label" (t "nav.buckets") "icon" "inventory_2" "key" "buckets" "active" .ActiveNav) }}
       {{ with .Bucket }}
-      {{ template "console_nav_item" (dict "href" (printf "/buckets/%s/objects" .Name) "label" "Object Browser" "icon" "folder_open" "key" "objects" "active" $.ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" (printf "/buckets/%s/objects" .Name) "label" (t "nav.objects") "icon" "folder_open" "key" "objects" "active" $.ActiveNav) }}
       {{ else }}
-      {{ template "console_nav_item" (dict "href" "/buckets" "label" "Object Browser" "icon" "folder_open" "key" "objects" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/buckets" "label" (t "nav.objects") "icon" "folder_open" "key" "objects" "active" .ActiveNav) }}
       {{ end }}
 
-      <p class="px-3 pb-1 pt-4 font-label-sm text-label-sm uppercase tracking-wider text-outline">Governance &amp; Security</p>
+      <p class="px-3 pb-1 pt-4 font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "nav.group.governance" }}</p>
       {{ with .Bucket }}
-      {{ template "console_nav_item" (dict "href" (printf "/buckets/%s/settings" .Name) "label" "Configuration & Access" "icon" "shield_lock" "key" "policies" "active" $.ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" (printf "/buckets/%s/settings" .Name) "label" (t "nav.policies") "icon" "shield_lock" "key" "policies" "active" $.ActiveNav) }}
       {{ else }}
-      {{ template "console_nav_item" (dict "href" "/buckets" "label" "Configuration & Access" "icon" "shield_lock" "key" "policies" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/buckets" "label" (t "nav.policies") "icon" "shield_lock" "key" "policies" "active" .ActiveNav) }}
       {{ end }}
-      {{ template "console_nav_item" (dict "href" "/analytics" "label" "Analytics & Transfer" "icon" "insights" "key" "analytics" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/analytics" "label" (t "nav.analytics") "icon" "insights" "key" "analytics" "active" .ActiveNav) }}
 
-      <p class="px-3 pb-1 pt-4 font-label-sm text-label-sm uppercase tracking-wider text-outline">Management</p>
-      {{ template "console_nav_item" (dict "href" "/analytics#transfers" "label" "Replication Rules" "icon" "swap_horiz" "key" "replication" "active" .ActiveNav) }}
-      {{ template "console_nav_item" (dict "href" "/analytics#tiers" "label" "Storage Classes & Tiers" "icon" "layers" "key" "tiers" "active" .ActiveNav) }}
-      {{ template "console_nav_item" (dict "href" "/audit" "label" "Audit Logs" "icon" "receipt_long" "key" "audit" "active" .ActiveNav) }}
-      {{ template "console_nav_item" (dict "href" "/settings" "label" "Settings" "icon" "settings" "key" "settings" "active" .ActiveNav) }}
+      <p class="px-3 pb-1 pt-4 font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "nav.group.management" }}</p>
+      {{ template "console_nav_item" (dict "href" "/analytics#transfers" "label" (t "nav.replication") "icon" "swap_horiz" "key" "replication" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/analytics#tiers" "label" (t "nav.tiers") "icon" "layers" "key" "tiers" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/audit" "label" (t "nav.audit") "icon" "receipt_long" "key" "audit" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/settings" "label" (t "nav.settings") "icon" "settings" "key" "settings" "active" .ActiveNav) }}
     </nav>
   </div>
 
   <div class="space-y-3 border-t border-outline-variant/30 p-3">
     <div class="rounded-lg bg-surface-container p-3">
       <div class="flex items-center justify-between font-label-sm text-label-sm">
-        <span class="uppercase tracking-wider text-outline">Storage Quota</span>
-        {{ with .Quota }}<span class="font-code-sm text-code-sm text-on-surface">{{ .Percent }}%</span>{{ end }}
+        <span class="uppercase tracking-wider text-outline">{{ t "layout.storage_quota" }}</span>
+        {{ with .Quota }}<span class="font-code-sm text-code-sm text-on-surface">{{ .PercentLabel }}</span>{{ end }}
       </div>
       {{ with .Quota }}
       <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-container-lowest" role="progressbar" aria-valuenow="{{ .Percent }}" aria-valuemin="0" aria-valuemax="100">
@@ -157,22 +157,23 @@
         <span class="text-outline">/ {{ .QuotaLabel }}</span>
       </div>
       {{ else }}
-      <p class="mt-2 font-code-sm text-code-sm text-outline">Sem dados de uso</p>
+      <p class="mt-2 font-code-sm text-code-sm text-outline">{{ t "layout.no_usage" }}</p>
       {{ end }}
     </div>
     <a href="https://www.backblaze.com/apidocs/introduction" target="_blank" rel="noopener" class="flex items-center justify-between rounded-lg px-3 py-2 font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface">
-      API Documentation
+      {{ t "layout.api_docs" }}
       <span class="material-symbols-outlined text-[16px] text-outline">open_in_new</span>
     </a>
     {{ if .UserEmail }}
     <div class="flex items-center gap-2 px-1">
       <img src="/static/img/avatar.png" alt="" class="h-7 w-7 rounded-full bg-surface-container-high" width="28" height="28" />
       <span class="min-w-0 flex-1 truncate font-code-sm text-code-sm text-on-surface-variant">{{ .UserEmail }}</span>
-      <.form action="/logout" method="post">
-        <button type="submit" class="inline-flex h-7 w-7 items-center justify-center rounded text-outline transition-colors hover:bg-surface-container hover:text-on-surface" title="Sair" aria-label="Sair">
+      <form action="/logout" method="post" data-amarra-skip>
+        {{ csrfField .CSRFToken }}
+        <button type="submit" class="inline-flex h-7 w-7 items-center justify-center rounded text-outline transition-colors hover:bg-surface-container hover:text-on-surface" title="{{ t "layout.logout" }}" aria-label="{{ t "layout.logout" }}">
           <span class="material-symbols-outlined text-[18px]">logout</span>
         </button>
-      </.form>
+      </form>
     </div>
     {{ end }}
   </div>
@@ -199,7 +200,7 @@
       data-amarra-sidebar-target="#amarra-nav"
       aria-controls="amarra-nav"
       aria-expanded="false"
-      aria-label="Menu"
+      aria-label="{{ t "layout.menu" }}"
     >
       <span class="material-symbols-outlined text-[20px]">menu</span>
     </button>
@@ -210,7 +211,7 @@
         type="search"
         name="q"
         value="{{ .SearchQuery }}"
-        placeholder="Search buckets, files, prefixes..."
+        placeholder="{{ t "layout.search" }}"
         data-cloudstore-search
         class="h-8 w-full rounded bg-surface-container pl-9 pr-14 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:bg-surface-container-high focus:outline-none"
       />
@@ -225,27 +226,28 @@
       </span>
       {{ end }}
       <a href="https://www.backblaze.com/apidocs/introduction" target="_blank" rel="noopener" class="hidden rounded px-2 py-1 font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface md:block">Docs</a>
-      <button type="button" class="hidden h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface sm:inline-flex" title="Notificações" aria-label="Notificações">
+      <button type="button" class="hidden h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface sm:inline-flex" title="{{ t "layout.notifications" }}" aria-label="{{ t "layout.notifications" }}">
         <span class="material-symbols-outlined text-[20px]">notifications</span>
       </button>
       <div amarra-hook="dropdown" class="relative">
         <button type="button" data-amarra-dropdown-button aria-expanded="false" class="flex items-center gap-2 rounded px-1.5 py-1 transition-colors hover:bg-surface-container">
           <img src="/static/img/avatar.png" alt="" class="h-7 w-7 rounded-full bg-surface-container-high" width="28" height="28" />
           <span class="hidden text-left lg:block">
-            <span class="block max-w-[16rem] truncate font-label-md text-label-md leading-tight text-on-surface">{{ if .UserEmail }}{{ .UserEmail }}{{ else }}DevOps Admin{{ end }}</span>
-            <span class="block font-label-sm text-label-sm text-outline">DevOps Admin</span>
+            <span class="block max-w-[16rem] truncate font-label-md text-label-md leading-tight text-on-surface">{{ if .UserEmail }}{{ .UserEmail }}{{ else }}{{ t "layout.role" }}{{ end }}</span>
+            <span class="block font-label-sm text-label-sm text-outline">{{ t "layout.role" }}</span>
           </span>
           <span class="material-symbols-outlined text-[18px] text-outline">expand_more</span>
         </button>
         <div data-amarra-dropdown-menu hidden class="absolute right-0 mt-1 w-56 rounded-lg border border-surface-bright bg-surface-container-high p-1 shadow-xl">
           <a href="/settings" class="flex items-center gap-2 rounded px-3 py-2 font-body-sm text-body-sm text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface">
-            <span class="material-symbols-outlined text-[18px]">settings</span> Settings
+            <span class="material-symbols-outlined text-[18px]">settings</span> {{ t "nav.settings" }}
           </a>
-          <.form action="/logout" method="post">
+          <form action="/logout" method="post" data-amarra-skip>
+            {{ csrfField .CSRFToken }}
             <button type="submit" class="flex w-full items-center gap-2 rounded px-3 py-2 text-left font-body-sm text-body-sm text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface">
-              <span class="material-symbols-outlined text-[18px]">logout</span> Sair
+              <span class="material-symbols-outlined text-[18px]">logout</span> {{ t "layout.logout" }}
             </button>
-          </.form>
+          </form>
         </div>
       </div>
     </div>

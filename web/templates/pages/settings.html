@@ -1,0 +1,134 @@
+{{ define "content" }}
+{{ $vm := .VM }}
+<div class="flex flex-col gap-space-lg">
+  <div class="flex items-center gap-space-sm">
+    <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-container text-primary">
+      <span class="material-symbols-outlined text-lg leading-none">settings</span>
+    </span>
+    <h1 class="font-headline-lg text-headline-lg text-on-surface">{{ t "settings.title" }}</h1>
+  </div>
+
+  {{ if $vm.FormError }}
+  <div class="flex items-start gap-2 rounded-lg border border-error/40 bg-error-container/20 px-3 py-2 font-body-sm text-body-sm text-error" role="alert">
+    <span class="material-symbols-outlined text-base leading-none">error</span>
+    <span>{{ $vm.FormError }}</span>
+  </div>
+  {{ end }}
+
+  <div class="grid grid-cols-1 items-start gap-space-md xl:grid-cols-12">
+    <!-- Accounts -->
+    <div class="flex flex-col gap-space-md rounded-xl bg-surface-container p-space-lg shadow-md xl:col-span-7">
+      <div>
+        <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "settings.accounts.title" }}</h2>
+        <p class="mt-1 font-body-sm text-body-sm text-on-surface-variant">{{ t "settings.accounts.body" }}</p>
+      </div>
+
+      {{ if $vm.Accounts }}
+      <div class="divide-y divide-surface-container/60 overflow-hidden rounded-lg bg-surface-container-lowest">
+        {{ range $vm.Accounts }}
+        <div class="flex flex-col gap-space-sm p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div class="flex min-w-0 items-center gap-3">
+            <span class="material-symbols-outlined text-xl {{ if .Active }}text-secondary{{ else }}text-outline{{ end }}">{{ if .Active }}cloud_done{{ else }}cloud{{ end }}</span>
+            <div class="flex min-w-0 flex-col">
+              <span class="flex items-center gap-2 font-headline-sm text-headline-sm text-on-surface">
+                {{ .Label }}
+                {{ if .Active }}
+                <span class="inline-flex items-center gap-1 rounded bg-secondary/10 px-1.5 py-0.5 font-label-sm text-label-sm text-secondary">
+                  <span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>{{ t "settings.active_badge" }}
+                </span>
+                {{ end }}
+              </span>
+              <span class="truncate font-code-sm text-code-sm text-outline">{{ .KeyID }} · {{ .Region }}</span>
+              {{ if .Verify }}
+              <span class="font-label-sm text-label-sm {{ if $vm.VerifyOK }}text-secondary{{ else }}text-tertiary{{ end }}">{{ .Verify }}</span>
+              {{ end }}
+            </div>
+          </div>
+          <div class="flex items-center gap-space-xs">
+            {{ if not .Active }}
+            <form action="/settings/accounts/{{ .ID }}/activate" method="post" data-amarra-skip>
+              {{ csrfField $.CSRFToken }}
+              <button type="submit" class="flex h-7 items-center gap-1 rounded bg-surface-container-high px-2 font-label-sm text-label-sm text-on-surface transition-colors hover:bg-surface-bright">
+                <span class="material-symbols-outlined text-sm">bolt</span>{{ t "settings.activate" }}
+              </button>
+            </form>
+            {{ end }}
+            <form action="/settings/accounts/{{ .ID }}/delete" method="post" data-amarra-skip>
+              {{ csrfField $.CSRFToken }}
+              <button type="submit" data-amarra-confirm="{{ t "settings.delete_confirm" .Label }}" class="flex h-7 items-center gap-1 rounded bg-error-container/20 px-2 font-label-sm text-label-sm text-error transition-colors hover:bg-error-container/50">
+                <span class="material-symbols-outlined text-sm">delete</span>{{ t "settings.delete" }}
+              </button>
+            </form>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+      {{ else }}
+      <div class="rounded-lg bg-surface-container-lowest p-4 text-center font-body-sm text-body-sm text-outline">{{ t "settings.accounts.empty" }}</div>
+      {{ end }}
+
+      <div amarra-hook="dialog">
+        <button type="button" data-amarra-dialog-open class="flex h-8 items-center gap-1.5 rounded bg-primary px-space-md font-label-md text-label-md font-semibold text-on-primary shadow transition-colors hover:bg-primary-fixed">
+          <span class="material-symbols-outlined text-base">add</span>
+          {{ t "settings.submit" }}
+        </button>
+        <.modal>
+          <div class="border-b border-outline-variant/40 px-4 py-3">
+            <h2 class="font-headline-md text-headline-md text-on-surface">{{ t "settings.accounts.title" }}</h2>
+            <p class="mt-1 font-body-sm text-body-sm text-outline">{{ t "settings.secret_hint" }}</p>
+          </div>
+          <form action="/settings/accounts" method="post" data-amarra-skip>
+            {{ csrfField .CSRFToken }}
+            <div class="flex flex-col gap-space-sm px-4 py-4">
+              <.input name="label" label="{{ t "settings.label" }}" value="{{ $vm.FormLabel }}" />
+              <.input name="key_id" label="{{ t "settings.key_id" }}" value="{{ $vm.FormKeyID }}" />
+              <.input name="app_key" label="{{ t "settings.app_key" }}" />
+              <.select name="region" label="{{ t "settings.region" }}">
+                {{ range $vm.Regions }}<option value="{{ . }}"{{ if eq . $vm.FormRegion }} selected{{ end }}>{{ . }}</option>{{ end }}
+              </.select>
+            </div>
+            <div class="flex justify-end gap-space-sm border-t border-outline-variant/40 px-4 py-3">
+              <button type="button" data-amarra-dialog-close class="h-8 rounded-lg bg-surface-container-high px-4 font-label-md text-label-md text-on-surface transition-colors hover:bg-surface-container-highest">{{ t "buckets.modal.cancel" }}</button>
+              <.button type="submit">{{ t "settings.submit" }}</.button>
+            </div>
+          </form>
+        </.modal>
+      </div>
+    </div>
+
+    <!-- Preferences -->
+    <div class="flex flex-col gap-space-md xl:col-span-5">
+      <div class="flex flex-col gap-space-md rounded-xl bg-surface-container p-space-lg shadow-md">
+        <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "settings.preferences" }}</h2>
+        <div class="flex items-center justify-between rounded-lg bg-surface-container-lowest p-3">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">{{ t "settings.language" }}</span>
+          <.locale-toggle current="{{ .Locale }}" />
+        </div>
+        <div class="flex items-center justify-between rounded-lg bg-surface-container-lowest p-3">
+          <span class="font-body-sm text-body-sm text-on-surface-variant">{{ t "settings.quota" }}</span>
+          <span class="font-code-sm text-code-sm text-on-surface">{{ $vm.UsedLabel }} / {{ $vm.QuotaLabel }}</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-space-sm rounded-xl bg-surface-container p-space-lg shadow-md">
+        <div class="flex items-center justify-between">
+          <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "settings.demo_title" }}</h2>
+          {{ if $vm.Demo }}
+          <span class="inline-flex items-center gap-1.5 rounded bg-tertiary/10 px-2 py-0.5 font-label-sm text-label-sm text-tertiary">
+            <span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span>{{ t "settings.demo_badge" }}
+          </span>
+          {{ else }}
+          <span class="inline-flex items-center gap-1.5 rounded bg-secondary/10 px-2 py-0.5 font-label-sm text-label-sm text-secondary">
+            <span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>{{ t "layout.connected" }}
+          </span>
+          {{ end }}
+        </div>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "settings.demo_body" }}</p>
+        <div class="rounded-lg bg-surface-container-lowest p-3 font-code-sm text-code-sm text-outline">
+          APP_SECRET · B2_KEY_ID · B2_APP_KEY
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}

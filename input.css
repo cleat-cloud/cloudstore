@@ -29,6 +29,12 @@
 }
 
 @layer base {
+  /* Tailwind display utilities beat the `hidden` attribute (equal specificity,
+     later in the sheet), so the console's panels/bulk bar hide explicitly. */
+  [hidden] {
+    display: none !important;
+  }
+
   body {
     @apply bg-surface font-sans text-on-surface antialiased;
   }

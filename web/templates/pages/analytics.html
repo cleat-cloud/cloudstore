@@ -1,0 +1,288 @@
+{{ define "content" }}
+{{ $vm := .VM }}
+<div class="flex flex-col gap-space-md">
+  <!-- Header -->
+  <div class="flex flex-col justify-between gap-space-md rounded-xl bg-surface-container-low p-space-lg shadow-md xl:flex-row xl:items-center">
+    <div class="flex flex-col gap-space-xs">
+      <div class="flex items-center gap-space-sm">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-container text-primary">
+          <span class="material-symbols-outlined text-lg leading-none">insights</span>
+        </span>
+        <h1 class="font-headline-lg text-headline-lg text-on-surface">{{ t "analytics.title" }}</h1>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "analytics.subtitle" }}</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-space-sm">
+      <span class="inline-flex items-center rounded-lg bg-surface-container px-space-md py-1 font-label-sm text-label-sm text-on-surface">{{ t "analytics.period" }}</span>
+      <a href="/buckets.csv" class="flex h-8 items-center gap-space-xs rounded bg-primary px-space-md font-label-md text-label-md text-on-primary shadow-sm transition-all hover:bg-primary-fixed-dim">
+        <span class="material-symbols-outlined text-base leading-none">download</span>
+        <span>{{ t "buckets.export_csv" }}</span>
+      </a>
+    </div>
+  </div>
+
+  {{ if $vm.Error }}
+  <div class="flex items-start gap-2 rounded-lg border border-error/40 bg-error-container/20 px-3 py-2 font-body-sm text-body-sm text-error" role="alert">
+    <span class="material-symbols-outlined text-base leading-none">error</span>
+    <span>{{ $vm.Error }}</span>
+  </div>
+  {{ end }}
+
+  <!-- KPI cards -->
+  <div class="grid grid-cols-1 gap-space-md sm:grid-cols-2 xl:grid-cols-4">
+    <div class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-md transition-all hover:bg-surface-container">
+      <div class="flex items-center justify-between text-outline">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">{{ t "analytics.kpi.volume" }}</span>
+        <span class="rounded bg-surface-container-lowest p-1 text-primary">
+          <span class="material-symbols-outlined text-base leading-none">database</span>
+        </span>
+      </div>
+      <div class="my-space-md">
+        <div class="font-headline-xl text-headline-xl tracking-tight text-on-surface">{{ $vm.VolumeLabel }}</div>
+        <div class="mt-1 flex items-center gap-space-xs">
+          <span class="h-2 w-2 rounded-full bg-secondary"></span>
+          <span class="font-body-sm text-body-sm text-secondary">{{ $vm.ObjectsLabel }} {{ t "buckets.table.objects" }}</span>
+        </div>
+      </div>
+      <div class="h-8 w-full pt-1">
+        <svg class="h-full w-full overflow-visible" fill="none" preserveAspectRatio="none" viewBox="0 0 100 24" aria-hidden="true">
+          <polyline class="text-primary" points="{{ $vm.ChartLine }}" pathLength="100" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"></polyline>
+        </svg>
+      </div>
+    </div>
+
+    <div class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-md transition-all hover:bg-surface-container">
+      <div class="flex items-center justify-between text-outline">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">{{ t "analytics.kpi.objects" }}</span>
+        <span class="rounded bg-surface-container-lowest p-1 text-secondary">
+          <span class="material-symbols-outlined text-base leading-none">inventory_2</span>
+        </span>
+      </div>
+      <div class="my-space-md">
+        <div class="font-headline-xl text-headline-xl tracking-tight text-on-surface">{{ $vm.ObjectsLabel }}</div>
+        <div class="flex items-center justify-between font-code-sm text-code-sm text-on-surface-variant">
+          <span>{{ t "objects.volume" }} <strong class="text-on-surface">{{ $vm.VolumeLabel }}</strong></span>
+        </div>
+      </div>
+      <div class="flex h-1.5 w-full overflow-hidden rounded-full bg-surface-container">
+        <div class="h-full bg-primary" style="width: {{ $vm.StandardPct }}%"></div>
+        <div class="h-full bg-tertiary" style="width: {{ $vm.NearlinePct }}%"></div>
+        <div class="h-full bg-secondary-container" style="width: {{ $vm.ArchivePct }}%"></div>
+      </div>
+    </div>
+
+    <div class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-md transition-all hover:bg-surface-container">
+      <div class="flex items-center justify-between text-outline">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">{{ t "analytics.kpi.ops" }}</span>
+        <span class="rounded bg-surface-container-lowest p-1 text-tertiary">
+          <span class="material-symbols-outlined text-base leading-none">sync_saved_locally</span>
+        </span>
+      </div>
+      <div class="my-space-md">
+        <div class="font-headline-xl text-headline-xl tracking-tight text-on-surface">{{ $vm.OpsLabel }}</div>
+        <div class="mt-1 flex items-center gap-space-xs">
+          <span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>
+          <span class="font-label-sm text-label-sm text-secondary">{{ t "analytics.kpi.ops_hint" }}</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-between font-label-sm text-label-sm text-outline">
+        <span>{{ t "policies.audit.badge" }}</span>
+        <a href="/audit" class="font-code-sm text-code-sm text-primary hover:underline">{{ t "analytics.logs.all" }}</a>
+      </div>
+    </div>
+
+    <div class="group relative flex flex-col justify-between overflow-hidden rounded-xl bg-surface-container-low p-space-lg shadow-md transition-all hover:bg-surface-container">
+      <div class="flex items-center justify-between text-outline">
+        <span class="font-label-sm text-label-sm uppercase tracking-wider">{{ t "analytics.kpi.errors" }}</span>
+        <span class="rounded bg-surface-container-lowest p-1 text-secondary">
+          <span class="material-symbols-outlined text-base leading-none">verified_user</span>
+        </span>
+      </div>
+      <div class="my-space-md">
+        <div class="font-headline-xl text-headline-xl tracking-tight {{ if eq $vm.ErrorRate "0%" }}text-secondary{{ else }}text-tertiary{{ end }}">{{ $vm.ErrorRate }}</div>
+        <div class="mt-1 flex items-center gap-space-xs">
+          <span class="h-1.5 w-1.5 rounded-full bg-secondary"></span>
+          <span class="font-label-sm text-label-sm text-secondary">{{ if $vm.ErrorHint }}{{ $vm.ErrorHint }}{{ else }}{{ $vm.StatusTotal }} eventos{{ end }}</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-between font-label-sm text-label-sm text-outline">
+        <span>{{ t "analytics.status.subtitle" }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart + status -->
+  <div class="grid grid-cols-1 gap-space-md lg:grid-cols-3">
+    <div class="flex flex-col justify-between gap-space-md rounded-xl bg-surface-container-low p-space-lg shadow-md lg:col-span-2">
+      <div class="flex flex-col justify-between gap-space-sm sm:flex-row sm:items-center">
+        <div>
+          <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "analytics.chart.title" }}</h2>
+          <p class="font-body-sm text-body-sm text-outline">{{ t "analytics.chart.subtitle" }}</p>
+        </div>
+        <div id="tiers" class="flex items-center gap-space-sm font-label-sm text-label-sm">
+          <div class="flex items-center gap-1.5">
+            <span class="h-2.5 w-2.5 rounded-full bg-primary"></span>
+            <span class="text-on-surface">Standard {{ $vm.StandardPct }}%</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="h-2.5 w-2.5 rounded-full bg-tertiary"></span>
+            <span class="text-on-surface">Nearline {{ $vm.NearlinePct }}%</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="h-2.5 w-2.5 rounded-full bg-secondary-container"></span>
+            <span class="text-on-surface">Archive {{ $vm.ArchivePct }}%</span>
+          </div>
+        </div>
+      </div>
+      <div class="relative flex h-64 w-full flex-col justify-between rounded-lg bg-surface-container-lowest/50 p-space-md">
+        <svg class="h-full w-full" preserveAspectRatio="none" viewBox="0 0 640 180" aria-hidden="true">
+          <defs>
+            <linearGradient id="gradVolume" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#adc6ff" stop-opacity="0.45"></stop>
+              <stop offset="100%" stop-color="#adc6ff" stop-opacity="0.03"></stop>
+            </linearGradient>
+          </defs>
+          <line stroke="#26364a" stroke-dasharray="4,4" stroke-width="1" x1="0" x2="640" y1="45" y2="45"></line>
+          <line stroke="#26364a" stroke-dasharray="4,4" stroke-width="1" x1="0" x2="640" y1="90" y2="90"></line>
+          <line stroke="#26364a" stroke-dasharray="4,4" stroke-width="1" x1="0" x2="640" y1="135" y2="135"></line>
+          {{ if $vm.ChartArea }}
+          <path d="{{ $vm.ChartArea }}" fill="url(#gradVolume)"></path>
+          <polyline points="{{ $vm.ChartLine }}" fill="none" stroke="#adc6ff" stroke-width="2.5" stroke-linejoin="round"></polyline>
+          {{ end }}
+        </svg>
+        <div class="flex items-center justify-between pt-1 font-code-sm text-code-sm text-outline">
+          <span>{{ $vm.ChartFrom }}</span>
+          <span class="text-primary">{{ t "analytics.chart.samples" $vm.ChartSamples }}</span>
+          <span class="text-primary font-semibold">{{ $vm.ChartTo }}</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-between font-label-sm text-label-sm text-outline">
+        <span class="flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm text-secondary">bolt</span>
+          {{ t "analytics.chart.objects" $vm.ChartObjects }}
+        </span>
+        <span class="font-code-sm text-code-sm">{{ t "layout.storage_quota" }}: {{ $vm.VolumeLabel }}</span>
+      </div>
+    </div>
+
+    <div class="flex flex-col justify-between gap-space-md rounded-xl bg-surface-container-low p-space-lg shadow-md">
+      <div>
+        <div class="flex items-center justify-between">
+          <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "analytics.status.title" }}</h2>
+          <span class="rounded bg-surface-container-lowest px-2 py-0.5 font-label-sm text-label-sm font-semibold text-secondary">{{ $vm.StatusTotal }}</span>
+        </div>
+        <p class="font-body-sm text-body-sm text-outline">{{ t "analytics.status.subtitle" }}</p>
+      </div>
+      {{ if $vm.Statuses }}
+      <div class="flex flex-col items-center justify-center gap-space-md py-space-sm sm:flex-row lg:flex-col">
+        <div class="relative flex h-36 w-36 items-center justify-center">
+          <svg class="h-full w-full -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" fill="none" r="38" stroke="#1b2b3f" stroke-width="12"></circle>
+            <circle cx="50" cy="50" fill="none" r="38" stroke="#4edea3" stroke-dasharray="{{ $vm.DonutDash }}" stroke-linecap="round" stroke-width="12"></circle>
+          </svg>
+          <div class="absolute flex flex-col items-center justify-center text-center">
+            <span class="font-headline-md text-headline-md font-code-md text-on-surface">{{ $vm.OKPercent }}</span>
+            <span class="font-label-sm text-label-sm font-semibold text-secondary">2xx</span>
+          </div>
+        </div>
+        <div class="w-full space-y-1.5 font-label-md text-label-md">
+          {{ range $vm.Statuses }}
+          <div class="flex items-center justify-between rounded bg-surface-container-lowest/60 p-1">
+            <div class="flex items-center gap-1.5">
+              <span class="h-2 w-2 rounded-full {{ if eq .Kind "ok" }}bg-secondary{{ else if eq .Kind "warning" }}bg-tertiary{{ else if eq .Kind "error" }}bg-error{{ else }}bg-outline{{ end }}"></span>
+              <span class="text-on-surface">{{ .Label }}</span>
+            </div>
+            <span class="font-code-sm text-code-sm text-on-surface font-semibold">{{ .Percent }}</span>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+      {{ else }}
+      <p class="py-8 text-center font-body-sm text-body-sm text-outline">{{ t "analytics.status.empty" }}</p>
+      {{ end }}
+    </div>
+  </div>
+
+  <!-- Maintenance tasks -->
+  <div id="transfers" class="flex flex-col gap-space-md rounded-xl bg-surface-container-low p-space-lg shadow-md">
+    <div class="flex flex-col justify-between gap-space-sm sm:flex-row sm:items-center">
+      <div class="flex items-center gap-space-sm">
+        <span class="rounded bg-surface-container p-2 text-secondary">
+          <span class="material-symbols-outlined text-xl leading-none">swap_horiz</span>
+        </span>
+        <div>
+          <h2 class="font-headline-md text-headline-md text-on-surface">{{ t "analytics.tasks.title" }}</h2>
+          <span class="mt-0.5 inline-flex rounded bg-surface-container px-2 py-0.5 font-label-sm text-label-sm text-secondary">{{ t "analytics.tasks.badge" (len $vm.Tasks) }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="overflow-x-auto rounded-lg bg-surface-container-lowest">
+      <table class="w-full text-left font-body-sm text-body-sm">
+        <thead class="bg-surface-container font-label-sm text-label-sm uppercase tracking-wider text-outline">
+          <tr>
+            <th class="px-space-md py-2.5">{{ t "analytics.tasks.job" }}</th>
+            <th class="px-space-md py-2.5">{{ t "analytics.tasks.when" }}</th>
+            <th class="px-space-md py-2.5">{{ t "analytics.tasks.size" }}</th>
+            <th class="px-space-md py-2.5 text-right">{{ t "audit.table.status" }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-transparent">
+          {{ range $vm.Tasks }}
+          <tr class="transition-colors hover:bg-surface-container/60">
+            <td class="flex items-center gap-space-xs px-space-md py-space-md font-semibold text-on-surface">
+              <span class="material-symbols-outlined text-base text-primary">cloud_sync</span>
+              {{ .Job }}
+            </td>
+            <td class="px-space-md py-space-md font-code-sm text-code-sm text-on-surface-variant">{{ .When }}</td>
+            <td class="px-space-md py-space-md font-code-sm text-code-sm text-on-surface">{{ .Detail }}</td>
+            <td class="px-space-md py-space-md text-right">
+              <span class="rounded px-1.5 py-0.5 font-label-sm text-label-sm {{ if eq .Kind "ok" }}bg-secondary/10 text-secondary{{ else }}bg-tertiary/10 text-tertiary{{ end }}">{{ .Status }}</span>
+            </td>
+          </tr>
+          {{ else }}
+          <tr><td colspan="4" class="px-space-md py-6 text-center font-body-sm text-body-sm text-outline">{{ t "analytics.tasks.empty" }}</td></tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pt-space-md">
+      <div class="mb-space-sm flex items-center justify-between">
+        <div class="flex items-center gap-space-xs">
+          <span class="material-symbols-outlined text-lg text-outline">receipt_long</span>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">{{ t "analytics.logs.title" }}</h3>
+        </div>
+        <a href="/audit" class="font-code-sm text-code-sm text-primary hover:underline">{{ t "analytics.logs.all" }}</a>
+      </div>
+      <div class="overflow-x-auto rounded-lg bg-surface-container-lowest">
+        <table class="w-full text-left font-body-sm text-body-sm">
+          <thead class="bg-surface-container font-label-sm text-label-sm uppercase tracking-wider text-outline">
+            <tr>
+              <th class="px-space-md py-2">{{ t "audit.table.timestamp" }}</th>
+              <th class="px-space-md py-2">{{ t "audit.table.action" }}</th>
+              <th class="px-space-md py-2">{{ t "audit.table.target" }}</th>
+              <th class="px-space-md py-2 text-right">{{ t "audit.table.status" }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-transparent font-code-sm text-code-sm">
+            {{ range $vm.Logs }}
+            <tr class="transition-colors hover:bg-surface-container/50">
+              <td class="px-space-md py-2 text-outline">{{ .When }}</td>
+              <td class="px-space-md py-2">
+                <span class="rounded bg-surface-container px-1.5 py-0.5 font-semibold text-primary">{{ .Job }}</span>
+              </td>
+              <td class="max-w-xs truncate px-space-md py-2 text-on-surface">{{ .Detail }}</td>
+              <td class="px-space-md py-2 text-right">
+                <span class="rounded px-1.5 py-0.5 font-bold {{ if eq .Kind "ok" }}bg-secondary/10 text-secondary{{ else }}bg-tertiary/10 text-tertiary{{ end }}">{{ .Status }}</span>
+              </td>
+            </tr>
+            {{ else }}
+            <tr><td colspan="4" class="px-space-md py-6 text-center text-outline">{{ t "audit.empty" }}</td></tr>
+            {{ end }}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{{ end }}

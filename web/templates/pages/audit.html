@@ -1,0 +1,88 @@
+{{ define "content" }}
+{{ $vm := .VM }}
+<div class="flex flex-col gap-space-md">
+  <div class="flex flex-col justify-between gap-space-md rounded-xl bg-surface-container-low p-space-lg shadow-md xl:flex-row xl:items-center">
+    <div class="flex flex-col gap-space-xs">
+      <div class="flex items-center gap-space-sm">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-container text-primary">
+          <span class="material-symbols-outlined text-lg leading-none">receipt_long</span>
+        </span>
+        <h1 class="font-headline-lg text-headline-lg text-on-surface">{{ t "audit.title" }}</h1>
+      </div>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "audit.subtitle" }}</p>
+    </div>
+  </div>
+
+  <form action="/audit" method="get" class="flex flex-col items-stretch gap-space-sm rounded-xl bg-surface-container-low p-space-sm lg:flex-row lg:items-center">
+    <div class="relative flex-1">
+      <span class="material-symbols-outlined pointer-events-none absolute left-space-md top-1/2 -translate-y-1/2 text-base text-outline">search</span>
+      <input name="q" value="{{ $vm.Filters.Query }}" type="text" placeholder="{{ t "audit.filter.search" }}" class="h-8 w-full rounded bg-surface-container pl-9 pr-space-md font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:bg-surface-container-high focus:outline-none" />
+    </div>
+    <div class="relative shrink-0">
+      <select name="action" class="h-8 w-full cursor-pointer appearance-none rounded bg-surface-container px-space-md pr-8 font-body-sm text-body-sm text-on-surface focus:outline-none lg:w-auto">
+        <option value="all">{{ t "audit.filter.action" }}</option>
+        {{ range $vm.Actions }}<option value="{{ . }}"{{ if eq . $vm.Filters.Action }} selected{{ end }}>{{ . }}</option>{{ end }}
+      </select>
+      <span class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-sm text-outline">expand_more</span>
+    </div>
+    <div class="relative shrink-0">
+      <select name="status" class="h-8 w-full cursor-pointer appearance-none rounded bg-surface-container px-space-md pr-8 font-body-sm text-body-sm text-on-surface focus:outline-none lg:w-auto">
+        <option value="all">{{ t "audit.filter.status" }}</option>
+        {{ range $vm.Statuses }}<option value="{{ . }}"{{ if eq . $vm.Filters.Status }} selected{{ end }}>{{ . }}</option>{{ end }}
+      </select>
+      <span class="material-symbols-outlined pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-sm text-outline">expand_more</span>
+    </div>
+    <div class="flex items-center gap-1 self-end lg:self-center">
+      <button type="submit" class="h-8 rounded bg-primary px-space-md font-label-md text-label-md font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-fixed">{{ t "buckets.filter.apply" }}</button>
+      <a href="/audit" class="flex h-8 items-center rounded px-2 font-label-sm text-label-sm text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface">{{ t "buckets.filter.clear" }}</a>
+    </div>
+  </form>
+
+  <div class="overflow-hidden rounded-xl bg-surface-container shadow-md">
+    <div class="w-full overflow-x-auto">
+      <table class="w-full border-collapse text-left">
+        <thead>
+          <tr class="h-9 select-none bg-surface-container-high font-label-sm text-label-sm uppercase tracking-wider text-outline">
+            <th class="px-space-md font-semibold">{{ t "audit.table.timestamp" }}</th>
+            <th class="px-space-md font-semibold">{{ t "audit.table.actor" }}</th>
+            <th class="px-space-md font-semibold">{{ t "audit.table.action" }}</th>
+            <th class="px-space-md font-semibold">{{ t "audit.table.target" }}</th>
+            <th class="px-space-md font-semibold">{{ t "audit.table.detail" }}</th>
+            <th class="px-space-md text-right font-semibold">{{ t "audit.table.status" }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-surface-container-high/40 font-code-sm text-code-sm">
+          {{ range $vm.Rows }}
+          <tr class="transition-colors hover:bg-surface-container-high/40">
+            <td class="whitespace-nowrap px-space-md py-2 text-outline">{{ .At }}</td>
+            <td class="px-space-md py-2 text-on-surface-variant">{{ if .Actor }}{{ .Actor }}{{ else }}—{{ end }}</td>
+            <td class="px-space-md py-2">
+              <span class="rounded bg-surface-container-low px-1.5 py-0.5 font-semibold text-primary">{{ .Action }}</span>
+            </td>
+            <td class="max-w-xs truncate px-space-md py-2 text-on-surface" title="{{ .Target }}">{{ .Target }}</td>
+            <td class="max-w-xs truncate px-space-md py-2 text-on-surface-variant" title="{{ .Detail }}">{{ if .Detail }}{{ .Detail }}{{ else }}—{{ end }}</td>
+            <td class="px-space-md py-2 text-right">
+              <span class="rounded px-1.5 py-0.5 font-bold {{ if eq .Kind "ok" }}bg-secondary/10 text-secondary{{ else if eq .Kind "warning" }}bg-tertiary/10 text-tertiary{{ else if eq .Kind "error" }}bg-error/10 text-error{{ else }}bg-surface-container text-on-surface-variant{{ end }}">{{ .Status }}</span>
+            </td>
+          </tr>
+          {{ else }}
+          <tr><td colspan="6" class="px-space-md py-10 text-center font-body-sm text-body-sm text-outline">{{ t "audit.empty" }}</td></tr>
+          {{ end }}
+        </tbody>
+      </table>
+    </div>
+    <div class="flex items-center justify-between bg-surface-container px-space-md py-space-sm font-body-sm text-body-sm text-on-surface-variant">
+      <span>{{ t "audit.showing" $vm.Pagination.Total $vm.Pagination.Total }}</span>
+      {{ if gt $vm.Pagination.Pages 1 }}
+      <div class="flex items-center gap-space-xs">
+        <a href="{{ $vm.Pagination.Prev.Href }}" class="rounded bg-surface-container-low px-2 py-1 transition-colors hover:bg-surface-container-high {{ if not $vm.Pagination.HasPrev }}pointer-events-none opacity-40{{ end }}">{{ t "buckets.prev" }}</a>
+        {{ range $vm.Pagination.Links }}
+        <a href="{{ .Href }}" class="rounded px-2 py-1 font-semibold transition-colors {{ if .Active }}bg-primary text-on-primary{{ else }}bg-surface-container-low hover:bg-surface-container-high{{ end }}">{{ .Label }}</a>
+        {{ end }}
+        <a href="{{ $vm.Pagination.Next.Href }}" class="rounded bg-surface-container-low px-2 py-1 transition-colors hover:bg-surface-container-high {{ if not $vm.Pagination.HasNext }}pointer-events-none opacity-40{{ end }}">{{ t "buckets.next" }}</a>
+      </div>
+      {{ end }}
+    </div>
+  </div>
+</div>
+{{ end }}

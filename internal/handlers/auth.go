@@ -51,7 +51,7 @@ func (h *AuthHandler) renderAuth(w http.ResponseWriter, r *http.Request, name st
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	if _, ok := session.UserID(r); ok {
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		http.Redirect(w, r, "/buckets", http.StatusSeeOther)
 		return
 	}
 	email := ""
@@ -87,7 +87,7 @@ func (h *AuthHandler) LoginPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	flash.Set(w, "notice", h.t(r, "auth.welcome"), h.cfg.CookieSecure())
-	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+	http.Redirect(w, r, "/buckets", http.StatusSeeOther)
 }
 
 func (h *AuthHandler) LogoutPost(w http.ResponseWriter, r *http.Request) {
@@ -97,7 +97,7 @@ func (h *AuthHandler) LogoutPost(w http.ResponseWriter, r *http.Request) {
 
 func (h *AuthHandler) SignUp(w http.ResponseWriter, r *http.Request) {
 	if _, ok := session.UserID(r); ok {
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		http.Redirect(w, r, "/buckets", http.StatusSeeOther)
 		return
 	}
 	h.renderAuth(w, r, "signup", map[string]any{"Title": h.t(r, "auth.signup_title")}, 0)
@@ -156,12 +156,12 @@ func (h *AuthHandler) SignUpPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	flash.Set(w, "notice", h.t(r, "auth.welcome"), h.cfg.CookieSecure())
-	http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+	http.Redirect(w, r, "/buckets", http.StatusSeeOther)
 }
 
 func (h *AuthHandler) ForgotPassword(w http.ResponseWriter, r *http.Request) {
 	if _, ok := session.UserID(r); ok {
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		http.Redirect(w, r, "/buckets", http.StatusSeeOther)
 		return
 	}
 	h.renderAuth(w, r, "forgot_password", map[string]any{"Title": h.t(r, "auth.forgot_password_title")}, 0)
@@ -210,7 +210,7 @@ func (h *AuthHandler) ForgotPasswordPost(w http.ResponseWriter, r *http.Request)
 
 func (h *AuthHandler) ResetPassword(w http.ResponseWriter, r *http.Request) {
 	if _, ok := session.UserID(r); ok {
-		http.Redirect(w, r, "/dashboard", http.StatusSeeOther)
+		http.Redirect(w, r, "/buckets", http.StatusSeeOther)
 		return
 	}
 
