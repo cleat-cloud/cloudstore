@@ -58,6 +58,16 @@ type analyticsVM struct {
 
 	Tasks []logRow
 	Logs  []logRow
+
+	CostReady     bool
+	CostB2Monthly string
+	CostS3Monthly string
+	CostSavings   string
+	CostDaily     string
+	CostCap       string
+	CostPercent   string
+	CostBarWidth  int
+
 	Error string
 }
 
@@ -76,6 +86,7 @@ func (h *AnalyticsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		vm.StandardPct = percentOf(split.Standard, split.Total)
 		vm.NearlinePct = percentOf(split.Nearline, split.Total)
 		vm.ArchivePct = percentOf(split.Archive, split.Total)
+		vm.costPanel(split.Total, locale)
 	} else {
 		vm.Error = h.providerError(r, err)
 	}

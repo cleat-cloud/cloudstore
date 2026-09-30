@@ -284,5 +284,45 @@
       </div>
     </div>
   </div>
+
+  <!-- Custo estimado (B2 vs S3) -->
+  <div class="rounded-xl bg-surface-container-low p-space-lg shadow-md">
+    <div class="mb-space-md flex flex-wrap items-center justify-between gap-space-sm">
+      <div class="flex items-center gap-space-sm">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-surface-container text-tertiary">
+          <span class="material-symbols-outlined text-lg leading-none">payments</span>
+        </span>
+        <div>
+          <h2 class="font-headline-sm text-headline-sm text-on-surface">{{ t "analytics.cost.title" }}</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "analytics.cost.subtitle" }}</p>
+        </div>
+      </div>
+      <span class="rounded-lg bg-surface-container px-space-md py-1 font-code-sm text-code-sm text-on-surface-variant">{{ t "analytics.cost.rates" }}</span>
+    </div>
+    <div class="grid grid-cols-1 gap-space-md md:grid-cols-3">
+      <div class="rounded-lg bg-surface-container p-space-md">
+        <p class="font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "analytics.cost.b2" }}</p>
+        <p class="mt-1 font-headline-md text-headline-md text-secondary">{{ $vm.CostB2Monthly }}</p>
+      </div>
+      <div class="rounded-lg bg-surface-container p-space-md">
+        <p class="font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "analytics.cost.s3" }}</p>
+        <p class="mt-1 font-headline-md text-headline-md text-on-surface">{{ $vm.CostS3Monthly }}</p>
+      </div>
+      <div class="rounded-lg bg-surface-container p-space-md">
+        <p class="font-label-sm text-label-sm uppercase tracking-wider text-outline">{{ t "analytics.cost.savings" }}</p>
+        <p class="mt-1 font-headline-md text-headline-md text-tertiary">{{ $vm.CostSavings }}</p>
+      </div>
+    </div>
+    <div class="mt-space-md">
+      <div class="mb-1 flex flex-wrap items-center justify-between gap-space-sm font-label-sm text-label-sm text-outline">
+        <span>{{ t "analytics.cost.daily" }}</span>
+        <span>{{ $vm.CostDaily }} · {{ $vm.CostPercent }} {{ t "analytics.cost.cap" }} {{ $vm.CostCap }}</span>
+      </div>
+      <div class="h-1.5 w-full overflow-hidden rounded-full bg-surface-container-highest">
+        <div class="h-full rounded-full bg-primary" style="width: {{ $vm.CostBarWidth }}%"></div>
+      </div>
+      <p class="mt-2 font-body-sm text-body-sm text-outline">{{ t "analytics.cost.egress" }}</p>
+    </div>
+  </div>
 </div>
 {{ end }}
