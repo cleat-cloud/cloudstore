@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/puppe1990/amarra-cais/pkg/amarra/live"
 	"github.com/puppe1990/amarra-cais/pkg/cais"
@@ -37,8 +38,16 @@ func registerRoutes(r *cais.Router, deps Deps, cfg cais.Config) {
 	r.Get("/", home.ServeHTTP)
 	r.Get("/login", auth.Login)
 	r.Post("/login", loginLimit.Middleware(http.HandlerFunc(auth.LoginPost)).ServeHTTP)
-	r.Get("/signup", auth.SignUp)
-	r.Post("/signup", loginLimit.Middleware(http.HandlerFunc(auth.SignUpPost)).ServeHTTP)
+	// Signup is a feature flag (CLOUDSTORE_SIGNUP=1 enables it): the console is
+	// owner/invite only by default.
+	signupEnabled := os.Getenv("CLOUDSTORE_SIGNUP") == "1"
+	if signupEnabled {
+		r.Get("/signup", auth.SignUp)
+		r.Post("/signup", loginLimit.Middleware(http.HandlerFunc(auth.SignUpPost)).ServeHTTP)
+	} else {
+		r.Get("/signup", handlers.SignupDisabled(cfg))
+		r.Post("/signup", handlers.SignupDisabled(cfg))
+	}
 	r.Get("/forgot-password", auth.ForgotPassword)
 	r.Post("/forgot-password", resetLimit.Middleware(http.HandlerFunc(auth.ForgotPasswordPost)).ServeHTTP)
 	r.Get("/reset-password", auth.ResetPassword)
