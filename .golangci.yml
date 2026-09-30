@@ -23,7 +23,7 @@ formatters:
   settings:
     goimports:
       local-prefixes:
-        - github.com/puppe1990/cloudstore
+        - github.com/cleat-cloud/cloudstore
   exclusions:
     generated: lax
     paths:

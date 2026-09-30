@@ -11,10 +11,10 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais/flash"
 	"github.com/puppe1990/amarra-cais/pkg/cais/httpx"
 
-	"github.com/puppe1990/cloudstore/internal/console"
-	"github.com/puppe1990/cloudstore/internal/format"
-	"github.com/puppe1990/cloudstore/internal/models"
-	"github.com/puppe1990/cloudstore/internal/storage"
+	"github.com/cleat-cloud/cloudstore/internal/console"
+	"github.com/cleat-cloud/cloudstore/internal/format"
+	"github.com/cleat-cloud/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/storage"
 )
 
 type BucketsHandler struct{ consoleHandler }

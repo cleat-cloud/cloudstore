@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/puppe1990/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/models"
 )
 
 const sqliteTimeLayout = "2006-01-02 15:04:05"

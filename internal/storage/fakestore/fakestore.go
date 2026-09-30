@@ -13,8 +13,8 @@ import (
 
 	"github.com/brianvoe/gofakeit/v7"
 
-	"github.com/puppe1990/cloudstore/internal/models"
-	"github.com/puppe1990/cloudstore/internal/storage"
+	"github.com/cleat-cloud/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/storage"
 )
 
 // Store is an in-memory storage.Provider backed by gofakeit data. It powers

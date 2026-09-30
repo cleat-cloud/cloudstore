@@ -12,10 +12,10 @@ import (
 
 	"github.com/brianvoe/gofakeit/v7"
 
-	"github.com/puppe1990/cloudstore/internal/crypto"
-	"github.com/puppe1990/cloudstore/internal/models"
-	"github.com/puppe1990/cloudstore/internal/storage"
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/crypto"
+	"github.com/cleat-cloud/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/storage"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 const (

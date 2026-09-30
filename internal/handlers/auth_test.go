@@ -10,8 +10,8 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais"
 	"github.com/puppe1990/amarra-cais/pkg/cais/session"
 
-	appi18n "github.com/puppe1990/cloudstore/internal/i18n"
-	"github.com/puppe1990/cloudstore/internal/store"
+	appi18n "github.com/cleat-cloud/cloudstore/internal/i18n"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 func newAuthHandler(t *testing.T) (*AuthHandler, store.Store) {

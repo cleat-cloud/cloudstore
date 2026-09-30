@@ -17,10 +17,10 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais/meta"
 	"github.com/puppe1990/amarra-cais/pkg/cais/session"
 
-	"github.com/puppe1990/cloudstore/internal/console"
-	"github.com/puppe1990/cloudstore/internal/format"
-	"github.com/puppe1990/cloudstore/internal/models"
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/console"
+	"github.com/cleat-cloud/cloudstore/internal/format"
+	"github.com/cleat-cloud/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 // ConsoleDeps is everything a console page handler needs.

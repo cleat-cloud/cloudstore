@@ -6,7 +6,7 @@ import (
 
 	"github.com/puppe1990/amarra-cais/pkg/cais/fakedata"
 
-	"github.com/puppe1990/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/models"
 )
 
 func TestValidateBucketName_valid(t *testing.T) {

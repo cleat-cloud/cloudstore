@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 // RunSeeds populates demo data. Safe to run multiple times.

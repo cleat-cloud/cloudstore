@@ -13,13 +13,13 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais"
 	"github.com/puppe1990/amarra-cais/pkg/cais/session"
 
-	"github.com/puppe1990/cloudstore/internal/console"
-	"github.com/puppe1990/cloudstore/internal/crypto"
-	appi18n "github.com/puppe1990/cloudstore/internal/i18n"
-	"github.com/puppe1990/cloudstore/internal/models"
-	"github.com/puppe1990/cloudstore/internal/storage"
-	"github.com/puppe1990/cloudstore/internal/storage/fakestore"
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/console"
+	"github.com/cleat-cloud/cloudstore/internal/crypto"
+	appi18n "github.com/cleat-cloud/cloudstore/internal/i18n"
+	"github.com/cleat-cloud/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/storage"
+	"github.com/cleat-cloud/cloudstore/internal/storage/fakestore"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 type consoleFixture struct {

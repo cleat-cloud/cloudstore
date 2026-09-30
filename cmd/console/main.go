@@ -6,7 +6,7 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais"
 	"github.com/puppe1990/amarra-cais/pkg/cais/console"
 
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 func openStore(cfg cais.Config) (*store.SQLiteStore, error) {

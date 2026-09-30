@@ -16,7 +16,7 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais/session"
 	"github.com/puppe1990/amarra-cais/pkg/cais/validate"
 
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 type AuthHandler struct {

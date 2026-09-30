@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/puppe1990/cloudstore/internal/format"
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/format"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 type AnalyticsHandler struct{ consoleHandler }

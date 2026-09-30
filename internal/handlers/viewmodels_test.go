@@ -6,7 +6,7 @@ import (
 
 	"github.com/brianvoe/gofakeit/v7"
 
-	"github.com/puppe1990/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/models"
 )
 
 func fakerBuckets() []models.Bucket {

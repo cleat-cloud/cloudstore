@@ -6,7 +6,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/puppe1990/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/models"
 )
 
 var (

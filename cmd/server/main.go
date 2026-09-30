@@ -17,16 +17,16 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais/i18n"
 	"github.com/puppe1990/amarra-cais/pkg/cais/meta"
 
-	"github.com/puppe1990/cloudstore/internal/app"
-	"github.com/puppe1990/cloudstore/internal/console"
-	"github.com/puppe1990/cloudstore/internal/crypto"
-	appi18n "github.com/puppe1990/cloudstore/internal/i18n"
-	"github.com/puppe1990/cloudstore/internal/models"
-	"github.com/puppe1990/cloudstore/internal/storage"
-	"github.com/puppe1990/cloudstore/internal/storage/b2"
-	"github.com/puppe1990/cloudstore/internal/storage/fakestore"
-	"github.com/puppe1990/cloudstore/internal/store"
-	"github.com/puppe1990/cloudstore/web"
+	"github.com/cleat-cloud/cloudstore/internal/app"
+	"github.com/cleat-cloud/cloudstore/internal/console"
+	"github.com/cleat-cloud/cloudstore/internal/crypto"
+	appi18n "github.com/cleat-cloud/cloudstore/internal/i18n"
+	"github.com/cleat-cloud/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/storage"
+	"github.com/cleat-cloud/cloudstore/internal/storage/b2"
+	"github.com/cleat-cloud/cloudstore/internal/storage/fakestore"
+	"github.com/cleat-cloud/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/web"
 )
 
 // devAppSecret keeps `amarra-cais dev` frictionless; production must set

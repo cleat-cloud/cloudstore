@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/puppe1990/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/models"
 )
 
 // pageSize is the console's dense table page size.

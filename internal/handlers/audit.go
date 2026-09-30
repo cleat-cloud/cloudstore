@@ -6,8 +6,8 @@ import (
 
 	"github.com/puppe1990/amarra-cais/pkg/cais/httpx"
 
-	"github.com/puppe1990/cloudstore/internal/format"
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/format"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 type AuditHandler struct{ consoleHandler }

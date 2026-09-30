@@ -18,9 +18,9 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais/middleware"
 	"github.com/puppe1990/amarra-cais/pkg/cais/netutil"
 
-	"github.com/puppe1990/cloudstore/internal/console"
-	appi18n "github.com/puppe1990/cloudstore/internal/i18n"
-	"github.com/puppe1990/cloudstore/internal/store"
+	"github.com/cleat-cloud/cloudstore/internal/console"
+	appi18n "github.com/cleat-cloud/cloudstore/internal/i18n"
+	"github.com/cleat-cloud/cloudstore/internal/store"
 )
 
 type Deps struct {

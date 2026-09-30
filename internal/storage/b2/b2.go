@@ -16,8 +16,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/puppe1990/cloudstore/internal/models"
-	"github.com/puppe1990/cloudstore/internal/storage"
+	"github.com/cleat-cloud/cloudstore/internal/models"
+	"github.com/cleat-cloud/cloudstore/internal/storage"
 )
 
 const apiVersion = "v4"

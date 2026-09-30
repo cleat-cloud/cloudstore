@@ -7,7 +7,7 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais"
 	"github.com/puppe1990/amarra-cais/pkg/cais/middleware"
 
-	"github.com/puppe1990/cloudstore/internal/handlers"
+	"github.com/cleat-cloud/cloudstore/internal/handlers"
 )
 
 func registerRoutes(r *cais.Router, deps Deps, cfg cais.Config) {

@@ -1,4 +1,4 @@
-module github.com/puppe1990/cloudstore
+module github.com/cleat-cloud/cloudstore
 
 go 1.26.4
 
