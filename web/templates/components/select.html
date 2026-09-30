@@ -1,10 +1,10 @@
 <div>
-  <label class="block text-sm font-medium text-foam/70 mb-1" for="{{ .Name }}">{{ .Label }}</label>
+  <label class="mb-1 block font-label-sm text-label-sm uppercase tracking-wider text-outline" for="{{ .Name }}">{{ .Label }}</label>
   <select
-    class="w-full border border-copper/40 bg-ink text-foam rounded-none px-3 py-2 focus:ring-2 focus:ring-copper outline-none user-invalid:border-red-600"
+    class="user-invalid:border-error h-8 w-full cursor-pointer rounded border border-outline-variant/40 bg-surface-container px-3 font-body-sm text-body-sm text-on-surface transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary-container"
     id="{{ .Name }}"
     name="{{ .Name }}"
     {{- if .Error }} aria-invalid="true"{{ end }}
   >{{ .Inner }}</select>
-  {{ if .Error }}<p class="text-red-600 text-sm mt-1">{{ .Error }}</p>{{ end }}
+  {{ if .Error }}<p class="mt-1 font-body-sm text-body-sm text-error">{{ .Error }}</p>{{ end }}
 </div>
