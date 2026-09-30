@@ -45,6 +45,7 @@ type AuditStatusCount struct {
 type BucketUsage struct {
 	Objects   int64
 	Bytes     int64
+	Class     string
 	ScannedAt time.Time
 }
 
@@ -68,7 +69,8 @@ type Store interface {
 	CountAuditEvents(filter AuditFilter) (int64, error)
 	AuditDailyCounts(since time.Time) ([]AuditDayCount, error)
 	AuditStatusCounts(since time.Time) ([]AuditStatusCount, error)
-	UpsertBucketScan(bucket string, objects, bytes int64) error
+	UpsertBucketScan(bucket string, objects, bytes int64, class string) error
+	UpsertUsagePoint(day time.Time, bytes, objects int64) error
 	BucketScans() (map[string]BucketUsage, error)
 	UsageHistory(days int) ([]models.UsagePoint, error)
 	Sessions() session.Store
@@ -129,7 +131,6 @@ func seedAuthData(db *sql.DB, env string) error {
 	_, err = db.Exec("INSERT OR IGNORE INTO users (email, password_hash) VALUES (?, ?)", "demo@example.com", hash)
 	return err
 }
-
 
 func (s *SQLiteStore) FindUserByEmail(email string) (models.User, error) {
 	var u models.User

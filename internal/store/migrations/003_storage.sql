@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS bucket_scans (
     bucket_name TEXT PRIMARY KEY,
     objects INTEGER NOT NULL DEFAULT 0,
     bytes INTEGER NOT NULL DEFAULT 0,
+    class TEXT NOT NULL DEFAULT 'Standard',
     scanned_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

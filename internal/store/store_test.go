@@ -206,13 +206,13 @@ func TestAuditCounts_dailyAndStatus(t *testing.T) {
 func TestBucketScans_upsertAndUsageHistory(t *testing.T) {
 	s := newTestStore(t)
 
-	if err := s.UpsertBucketScan("alpha-cdn", 100, 5000); err != nil {
+	if err := s.UpsertBucketScan("alpha-cdn", 100, 5000, "Standard"); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.UpsertBucketScan("beta-raw", 5, 900); err != nil {
+	if err := s.UpsertBucketScan("beta-raw", 5, 900, "Archive"); err != nil {
 		t.Fatal(err)
 	}
-	if err := s.UpsertBucketScan("alpha-cdn", 120, 6000); err != nil {
+	if err := s.UpsertBucketScan("alpha-cdn", 120, 6000, "Nearline"); err != nil {
 		t.Fatal(err)
 	}
 
@@ -223,7 +223,7 @@ func TestBucketScans_upsertAndUsageHistory(t *testing.T) {
 	if len(scans) != 2 {
 		t.Fatalf("scans = %d, want 2", len(scans))
 	}
-	if got := scans["alpha-cdn"]; got.Objects != 120 || got.Bytes != 6000 {
+	if got := scans["alpha-cdn"]; got.Objects != 120 || got.Bytes != 6000 || got.Class != "Nearline" {
 		t.Errorf("alpha-cdn scan = %+v", got)
 	}
 

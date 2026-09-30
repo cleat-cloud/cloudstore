@@ -275,17 +275,20 @@ func (s *SQLiteStore) AuditStatusCounts(since time.Time) ([]AuditStatusCount, er
 
 // UpsertBucketScan stores the latest scan and folds it into today's usage
 // sample so the analytics chart has a real daily series.
-func (s *SQLiteStore) UpsertBucketScan(bucket string, objects, bytes int64) error {
+func (s *SQLiteStore) UpsertBucketScan(bucket string, objects, bytes int64, class string) error {
 	tx, err := s.db.Raw().Begin()
 	if err != nil {
 		return fmt.Errorf("begin scan upsert: %w", err)
 	}
 	defer func() { _ = tx.Rollback() }()
 
+	if class == "" {
+		class = "Standard"
+	}
 	if _, err := tx.Exec(
-		`INSERT INTO bucket_scans (bucket_name, objects, bytes, scanned_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)
-		 ON CONFLICT(bucket_name) DO UPDATE SET objects = excluded.objects, bytes = excluded.bytes, scanned_at = CURRENT_TIMESTAMP`,
-		bucket, objects, bytes,
+		`INSERT INTO bucket_scans (bucket_name, objects, bytes, class, scanned_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
+		 ON CONFLICT(bucket_name) DO UPDATE SET objects = excluded.objects, bytes = excluded.bytes, class = excluded.class, scanned_at = CURRENT_TIMESTAMP`,
+		bucket, objects, bytes, class,
 	); err != nil {
 		return fmt.Errorf("upsert bucket scan: %w", err)
 	}
@@ -301,7 +304,7 @@ func (s *SQLiteStore) UpsertBucketScan(bucket string, objects, bytes int64) erro
 }
 
 func (s *SQLiteStore) BucketScans() (map[string]BucketUsage, error) {
-	rows, err := s.db.Query("SELECT bucket_name, objects, bytes, scanned_at FROM bucket_scans")
+	rows, err := s.db.Query("SELECT bucket_name, objects, bytes, class, scanned_at FROM bucket_scans")
 	if err != nil {
 		return nil, fmt.Errorf("list bucket scans: %w", err)
 	}
@@ -311,13 +314,26 @@ func (s *SQLiteStore) BucketScans() (map[string]BucketUsage, error) {
 	for rows.Next() {
 		var name, scannedAt string
 		var usage BucketUsage
-		if err := rows.Scan(&name, &usage.Objects, &usage.Bytes, &scannedAt); err != nil {
+		if err := rows.Scan(&name, &usage.Objects, &usage.Bytes, &usage.Class, &scannedAt); err != nil {
 			return nil, fmt.Errorf("scan bucket scan: %w", err)
 		}
 		usage.ScannedAt = parseSQLiteTime(scannedAt)
 		scans[name] = usage
 	}
 	return scans, rows.Err()
+}
+
+// UpsertUsagePoint stores one daily sample (used by the demo history backfill).
+func (s *SQLiteStore) UpsertUsagePoint(day time.Time, bytes, objects int64) error {
+	_, err := s.db.Exec(
+		`INSERT INTO usage_daily (day, bytes, objects) VALUES (?, ?, ?)
+		 ON CONFLICT(day) DO UPDATE SET bytes = excluded.bytes, objects = excluded.objects`,
+		day.UTC().Format("2006-01-02"), bytes, objects,
+	)
+	if err != nil {
+		return fmt.Errorf("upsert usage point: %w", err)
+	}
+	return nil
 }
 
 func (s *SQLiteStore) UsageHistory(days int) ([]models.UsagePoint, error) {

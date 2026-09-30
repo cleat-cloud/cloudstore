@@ -18,6 +18,7 @@ import (
 	"github.com/puppe1990/amarra-cais/pkg/cais/middleware"
 	"github.com/puppe1990/amarra-cais/pkg/cais/netutil"
 
+	"github.com/puppe1990/cloudstore/internal/console"
 	appi18n "github.com/puppe1990/cloudstore/internal/i18n"
 	"github.com/puppe1990/cloudstore/internal/store"
 )
@@ -25,6 +26,7 @@ import (
 type Deps struct {
 	Views     *view.Renderer
 	Store     store.Store
+	Console   *console.Service
 	StaticDir string
 	Site      meta.Site
 	Catalog   *i18n.Catalog
@@ -46,6 +48,9 @@ func New(cfg cais.Config, deps Deps) (*App, error) {
 	}
 	if deps.Store == nil {
 		return nil, fmt.Errorf("store is required")
+	}
+	if deps.Console == nil {
+		return nil, fmt.Errorf("console service is required")
 	}
 
 	site := deps.Site

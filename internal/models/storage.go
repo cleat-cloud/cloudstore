@@ -36,14 +36,15 @@ type LifecycleRule struct {
 	DeleteAfterDays int
 }
 
-// CORSRule mirrors one B2 CORS rule (B2 operation names, not HTTP verbs).
+// CORSRule mirrors one B2 CORS rule. The JSON tags are the wire format of the
+// console's CORS editor (B2 operation names, not HTTP verbs).
 type CORSRule struct {
-	Name          string
-	Origins       []string
-	Operations    []string
-	Headers       []string
-	ExposeHeaders []string
-	MaxAge        int
+	Name          string   `json:"corsRuleName"`
+	Origins       []string `json:"allowedOrigins"`
+	Operations    []string `json:"allowedOperations"`
+	Headers       []string `json:"allowedHeaders"`
+	ExposeHeaders []string `json:"exposeHeaders"`
+	MaxAge        int      `json:"maxAgeSeconds"`
 }
 
 // BucketSettings is the editable governance surface of a bucket.
