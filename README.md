@@ -64,6 +64,8 @@ those variables gets an active account automatically.
 | `LOCALE`                         | `pt`            | Default UI language (`pt` or `en`)                             |
 | `DB_PATH`                        | `./data/app.db` | SQLite file                                                    |
 | `APP_SECRET`                     | —               | Key material that seals B2 application keys (required in prod) |
+| `CLOUDSTORE_SIGNUP`              | off             | `1` allows self-service signup; off = owner/invite only        |
+| `CLOUDSTORE_DEMO`                | off             | `1` serves generated demo data when no account is connected    |
 | `CLOUDSTORE_QUOTA_BYTES`         | `100 TB`        | Quota shown in the sidebar gauge                               |
 | `B2_KEY_ID` / `B2_APP_KEY`       | —               | Optional B2 application key seeded on boot                     |
 | `B2_REGION` / `B2_ACCOUNT_LABEL` | —               | Optional label/region for the seeded account                   |
