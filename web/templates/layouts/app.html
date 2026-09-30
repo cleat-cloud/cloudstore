@@ -1,98 +1,57 @@
-{{ define "title" }}cloudstore{{ end }}
-{{ define "description" }}cloudstore — powered by Amarra{{ end }}{{- define "icon_sparkles_md" -}}
-<svg class="w-5 h-5 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
-{{- end -}}
-{{- define "icon_home_nav" -}}
-<svg class="cais-nav-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
-{{- end -}}
-{{- define "icon_message_nav" -}}
-<svg class="cais-nav-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
-{{- end -}}
-{{- define "icon_chart_nav" -}}
-<svg class="cais-nav-icon" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
-{{- end -}}
-{{- define "icon_users_md" -}}
-<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-{{- end -}}
-{{- define "icon_shield_md" -}}
-<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-{{- end -}}
 {{ define "app" }}
 <!doctype html>
 <html lang="{{ htmlLang }}" data-amarra-layout="app">
   <head>
     <meta charset="UTF-8" />
-    <script>
-      try {
-        if (localStorage.getItem("amarra-theme") === "light") document.documentElement.classList.add("light");
-      } catch (e) {}
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark" />
     {{ if .CSRFToken }}<meta name="csrf-token" content="{{ .CSRFToken }}" />{{ end }}
-    <title>{{ if .Title }}{{ .Title }} · cloudstore{{ else }}cloudstore{{ end }}</title>
-    <meta name="description" content="cloudstore — powered by Amarra" />
+    <title>{{ if .Title }}{{ .Title }} · CloudStore{{ else }}CloudStore{{ end }}</title>
+    <meta name="description" content="Console de buckets do Backblaze B2: buckets, objetos, políticas e auditoria." />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="cloudstore" />
-    <meta property="og:title" content="{{ if .Title }}{{ .Title }}{{ else }}cloudstore{{ end }}" />
+    <meta property="og:site_name" content="CloudStore" />
+    <meta property="og:title" content="{{ if .Title }}{{ .Title }} · CloudStore{{ else }}CloudStore — Storage Console{{ end }}" />
+    <meta property="og:description" content="Console de buckets do Backblaze B2: buckets, objetos, políticas e auditoria." />
     <meta property="og:image" content="{{ absURL .Site.AppURL "/static/og.png" }}" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="{{ ogLocale }}" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="{{ absURL .Site.AppURL "/static/og.png" }}" />
+    <link rel="preload" href="/static/fonts/geist-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/fonts/material-symbols-outlined.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="/static/css/styles.css" />
     <link rel="manifest" href="/static/manifest.webmanifest" />
-    <meta name="theme-color" content="#c9893a" />
+    <meta name="theme-color" content="#031427" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="cloudstore" />
-    <link rel="apple-touch-icon" href="/static/icons/icon.png" />
+    <meta name="apple-mobile-web-app-title" content="CloudStore" />
+    <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png" />
     <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/static/favicon.ico" sizes="48x48" />
     <script src="/static/js/amarra.js" defer></script>
+    <script src="/static/js/cloudstore.js" defer></script>
   </head>
-  <body class="min-h-screen bg-ink font-sans antialiased text-foam flex flex-col justify-between">
-    <div>
-      <header class="bg-ink/95 backdrop-blur-sm border-b border-copper/30 sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
-          <button type="button" id="amarra-sidebar-toggle" class="lg:hidden inline-flex h-11 w-11 items-center justify-center border border-copper/40 text-copper hover:border-copper hover:text-foam transition-colors" aria-label="Menu" aria-controls="amarra-nav" aria-expanded="false" amarra-hook="sidebar" data-amarra-sidebar-target="#amarra-nav">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 7h16M4 12h16M4 17h16" /></svg>
-          </button>
-          <a href="/" class="flex items-center gap-3 group">
-            <span class="flex h-9 w-9 items-center justify-center border border-copper/70 text-copper group-hover:bg-copper group-hover:text-ink transition-colors" aria-hidden="true">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M5 20V8m0 0a3 3 0 116 0v1H5m14 11V9a3 3 0 00-3-3h-3" /></svg>
-            </span>
-            <span>
-              <span class="block font-serif text-xl leading-none tracking-tight text-foam">cloudstore</span>
-              <span class="mt-1 block font-mono text-[10px] uppercase tracking-[0.28em] text-copper/80">Amarra</span>
-            </span>
-          </a>
-          {{ if not .Site.LoggedIn }}
-          <a href="/login" class="font-mono text-[10px] uppercase tracking-[0.22em] text-copper hover:text-foam transition-colors">{{ t "auth.login_title" }}</a>
-          {{ end }}
-        </div>
-      </header>
-      <aside id="amarra-nav" class="bg-ink border-r border-foam/10 fixed left-0 top-[57px] bottom-0 z-30 w-60 -translate-x-full invisible transition-transform data-[amarra-sidebar-open]:translate-x-0 data-[amarra-sidebar-open]:visible lg:translate-x-0 lg:visible">
-        <div class="h-full flex flex-col gap-1 p-3 overflow-y-auto no-scrollbar">
-          <!-- nav hook re-syncs active link after Drive morph (#27); SSR ActiveNav stays the first-paint default -->
-          <div amarra-hook="nav" data-amarra-nav-on="text-copper" data-amarra-nav-off="text-foam/50 hover:text-foam" class="flex flex-col gap-1">
-            {{ if .Site.LoggedIn }}<a href="/dashboard" class="px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] transition flex items-center gap-2 flex-shrink-0 {{ if eq .ActiveNav "dashboard" }}text-copper{{ else }}text-foam/50 hover:text-foam{{ end }}">{{ template "icon_chart_nav" . }}Dashboard</a>
-            {{ end }}
-            <!-- cais:nav -->
-            {{ if .Site.LoggedIn }}<.form action="/logout" method="post">
-              <.button type="submit">Sair</.button>
-            </.form>
-            {{ end }}
-            <.locale-toggle current="{{ .Locale }}" />
-          </div>
-        </div>
-      </aside>
-      <div id="amarra-toast-host" aria-live="polite"></div>
-      <main id="amarra-main" class="flex-grow px-4 sm:px-6 lg:px-8 py-5 lg:ml-60">
-        <.flash />
-        {{ template "content" . }}
-      </main>
+  <body class="min-h-screen bg-surface font-sans text-on-surface antialiased">
+    {{ if .Site.LoggedIn }}
+    <div class="flex min-h-screen">
+      {{ template "console_sidebar" . }}
+      <div class="flex min-w-0 flex-1 flex-col">
+        {{ template "console_topbar" . }}
+        <main id="amarra-main" class="min-w-0 flex-1 px-4 py-5 xl:px-6">
+          <.flash />
+          {{ template "content" . }}
+        </main>
+      </div>
     </div>
-    <footer class="mt-auto border-t border-foam/10 py-6 text-center font-mono text-[10px] uppercase tracking-[0.22em] text-foam/40">
-      <p>© 2026 cloudstore · Built with Amarra</p>
-    </footer>
+    {{ else }}
+    <main id="amarra-main" class="flex min-h-screen items-center justify-center px-4 py-10">
+      <.flash />
+      {{ template "content" . }}
+    </main>
+    {{ end }}
+    <div id="amarra-toast-host" aria-live="polite"></div>
     {{ if eq .Site.Env "development" }}
     <script>
       if ("serviceWorker" in navigator) {
@@ -115,4 +74,181 @@
     {{ end }}
   </body>
 </html>
+{{ end }}
+
+{{ define "console_sidebar" }}
+<aside
+  id="amarra-nav"
+  class="fixed inset-y-0 left-0 z-40 flex w-60 shrink-0 -translate-x-full invisible flex-col border-r border-outline-variant/40 bg-surface transition-[transform,visibility] duration-200 data-[amarra-sidebar-open]:translate-x-0 data-[amarra-sidebar-open]:visible lg:sticky lg:top-0 lg:bottom-auto lg:h-screen lg:translate-x-0 lg:visible"
+>
+  <div class="flex items-center gap-2.5 border-b border-outline-variant/30 px-4 py-4">
+    <img src="/static/icons/icon-192.png" alt="" class="h-9 w-9 rounded-lg" width="36" height="36" />
+    <div class="min-w-0 flex-1">
+      <p class="truncate font-headline-md text-headline-md tracking-tight text-on-surface">CloudStore</p>
+      <p class="font-label-sm text-label-sm uppercase tracking-[0.22em] text-outline">Storage Console</p>
+    </div>
+    <button
+      type="button"
+      class="inline-flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-surface-container lg:hidden"
+      amarra-hook="sidebar"
+      data-amarra-sidebar-target="#amarra-nav"
+      aria-controls="amarra-nav"
+      aria-expanded="true"
+      aria-label="Fechar menu"
+    >
+      <span class="material-symbols-outlined text-[20px]">close</span>
+    </button>
+  </div>
+
+  <div class="min-h-0 flex-1 overflow-y-auto px-3 py-4">
+    <div class="mb-5 rounded-lg bg-surface-container p-3">
+      <p class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Project Context</p>
+      {{ with .Account }}
+      <div class="mt-1.5 flex items-center justify-between gap-2">
+        <span class="truncate font-code-sm text-code-sm text-on-surface">{{ .Label }}</span>
+        <span class="inline-flex shrink-0 items-center gap-1.5 rounded-full {{ if .Healthy }}bg-secondary/10 text-secondary{{ else }}bg-tertiary/10 text-tertiary{{ end }} px-2 py-0.5 font-label-sm text-label-sm">
+          <span class="h-1.5 w-1.5 rounded-full {{ if .Healthy }}bg-secondary{{ else }}bg-tertiary{{ end }}"></span>
+          {{ if .Healthy }}Active{{ else }}Offline{{ end }}
+        </span>
+      </div>
+      <p class="mt-1 truncate font-code-sm text-code-sm text-outline">{{ .Region }}</p>
+      {{ else }}
+      <p class="mt-1.5 font-code-sm text-code-sm text-outline">Nenhuma conta configurada</p>
+      {{ end }}
+    </div>
+
+    <nav amarra-hook="nav" data-amarra-nav-on="bg-primary-container/15 text-primary" data-amarra-nav-off="text-on-surface-variant hover:bg-surface-container hover:text-on-surface" class="flex flex-col gap-0.5">
+      <p class="px-3 pb-1 pt-2 font-label-sm text-label-sm uppercase tracking-wider text-outline">Core Storage</p>
+      {{ template "console_nav_item" (dict "href" "/buckets" "label" "Buckets Overview" "icon" "inventory_2" "key" "buckets" "active" .ActiveNav) }}
+      {{ with .Bucket }}
+      {{ template "console_nav_item" (dict "href" (printf "/buckets/%s/objects" .Name) "label" "Object Browser" "icon" "folder_open" "key" "objects" "active" $.ActiveNav) }}
+      {{ else }}
+      {{ template "console_nav_item" (dict "href" "/buckets" "label" "Object Browser" "icon" "folder_open" "key" "objects" "active" .ActiveNav) }}
+      {{ end }}
+
+      <p class="px-3 pb-1 pt-4 font-label-sm text-label-sm uppercase tracking-wider text-outline">Governance &amp; Security</p>
+      {{ with .Bucket }}
+      {{ template "console_nav_item" (dict "href" (printf "/buckets/%s/settings" .Name) "label" "Configuration & Access" "icon" "shield_lock" "key" "policies" "active" $.ActiveNav) }}
+      {{ else }}
+      {{ template "console_nav_item" (dict "href" "/buckets" "label" "Configuration & Access" "icon" "shield_lock" "key" "policies" "active" .ActiveNav) }}
+      {{ end }}
+      {{ template "console_nav_item" (dict "href" "/analytics" "label" "Analytics & Transfer" "icon" "insights" "key" "analytics" "active" .ActiveNav) }}
+
+      <p class="px-3 pb-1 pt-4 font-label-sm text-label-sm uppercase tracking-wider text-outline">Management</p>
+      {{ template "console_nav_item" (dict "href" "/analytics#transfers" "label" "Replication Rules" "icon" "swap_horiz" "key" "replication" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/analytics#tiers" "label" "Storage Classes & Tiers" "icon" "layers" "key" "tiers" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/audit" "label" "Audit Logs" "icon" "receipt_long" "key" "audit" "active" .ActiveNav) }}
+      {{ template "console_nav_item" (dict "href" "/settings" "label" "Settings" "icon" "settings" "key" "settings" "active" .ActiveNav) }}
+    </nav>
+  </div>
+
+  <div class="space-y-3 border-t border-outline-variant/30 p-3">
+    <div class="rounded-lg bg-surface-container p-3">
+      <div class="flex items-center justify-between font-label-sm text-label-sm">
+        <span class="uppercase tracking-wider text-outline">Storage Quota</span>
+        {{ with .Quota }}<span class="font-code-sm text-code-sm text-on-surface">{{ .Percent }}%</span>{{ end }}
+      </div>
+      {{ with .Quota }}
+      <div class="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-surface-container-lowest" role="progressbar" aria-valuenow="{{ .Percent }}" aria-valuemin="0" aria-valuemax="100">
+        <div class="h-full rounded-full {{ if gt .Percent 80 }}bg-tertiary{{ else }}bg-secondary{{ end }}" style="width: {{ .Percent }}%"></div>
+      </div>
+      <div class="mt-1.5 flex items-center justify-between font-code-sm text-code-sm">
+        <span class="text-on-surface">{{ .UsedLabel }}</span>
+        <span class="text-outline">/ {{ .QuotaLabel }}</span>
+      </div>
+      {{ else }}
+      <p class="mt-2 font-code-sm text-code-sm text-outline">Sem dados de uso</p>
+      {{ end }}
+    </div>
+    <a href="https://www.backblaze.com/apidocs/introduction" target="_blank" rel="noopener" class="flex items-center justify-between rounded-lg px-3 py-2 font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface">
+      API Documentation
+      <span class="material-symbols-outlined text-[16px] text-outline">open_in_new</span>
+    </a>
+    {{ if .UserEmail }}
+    <div class="flex items-center gap-2 px-1">
+      <img src="/static/img/avatar.png" alt="" class="h-7 w-7 rounded-full bg-surface-container-high" width="28" height="28" />
+      <span class="min-w-0 flex-1 truncate font-code-sm text-code-sm text-on-surface-variant">{{ .UserEmail }}</span>
+      <.form action="/logout" method="post">
+        <button type="submit" class="inline-flex h-7 w-7 items-center justify-center rounded text-outline transition-colors hover:bg-surface-container hover:text-on-surface" title="Sair" aria-label="Sair">
+          <span class="material-symbols-outlined text-[18px]">logout</span>
+        </button>
+      </.form>
+    </div>
+    {{ end }}
+  </div>
+</aside>
+{{ end }}
+
+{{ define "console_nav_item" }}
+<a
+  href="{{ .href }}"
+  class="flex items-center gap-2.5 rounded-lg px-3 py-2 font-body-md text-body-md transition-colors {{ if eq .key .active }}bg-primary-container/15 font-medium text-primary{{ else }}text-on-surface-variant hover:bg-surface-container hover:text-on-surface{{ end }}"
+>
+  <span class="material-symbols-outlined text-[18px] leading-none">{{ .icon }}</span>
+  <span class="truncate">{{ .label }}</span>
+</a>
+{{ end }}
+
+{{ define "console_topbar" }}
+<header class="sticky top-0 z-30 border-b border-outline-variant/30 bg-surface/95 backdrop-blur-sm">
+  <div class="flex h-14 items-center gap-2 px-4 xl:px-6">
+    <button
+      type="button"
+      class="inline-flex h-8 w-8 items-center justify-center rounded text-on-surface-variant hover:bg-surface-container lg:hidden"
+      amarra-hook="sidebar"
+      data-amarra-sidebar-target="#amarra-nav"
+      aria-controls="amarra-nav"
+      aria-expanded="false"
+      aria-label="Menu"
+    >
+      <span class="material-symbols-outlined text-[20px]">menu</span>
+    </button>
+
+    <form action="/buckets" method="get" class="relative hidden min-w-0 flex-1 md:block md:max-w-md">
+      <span class="material-symbols-outlined pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[18px] text-outline">search</span>
+      <input
+        type="search"
+        name="q"
+        value="{{ .SearchQuery }}"
+        placeholder="Search buckets, files, prefixes..."
+        data-cloudstore-search
+        class="h-8 w-full rounded bg-surface-container pl-9 pr-14 font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:bg-surface-container-high focus:outline-none"
+      />
+      <kbd class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 rounded bg-surface-container-high px-1.5 py-0.5 font-code-sm text-code-sm text-outline">⌘K</kbd>
+    </form>
+
+    <div class="ml-auto flex items-center gap-1.5">
+      {{ with .Account }}
+      <span class="hidden items-center gap-1.5 rounded-full bg-surface-container px-3 py-1 font-label-sm text-label-sm text-on-surface-variant xl:inline-flex">
+        <span class="h-1.5 w-1.5 rounded-full {{ if .Healthy }}animate-pulse bg-secondary{{ else }}bg-tertiary{{ end }}"></span>
+        {{ .StatusLabel }}
+      </span>
+      {{ end }}
+      <a href="https://www.backblaze.com/apidocs/introduction" target="_blank" rel="noopener" class="hidden rounded px-2 py-1 font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface md:block">Docs</a>
+      <button type="button" class="hidden h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface sm:inline-flex" title="Notificações" aria-label="Notificações">
+        <span class="material-symbols-outlined text-[20px]">notifications</span>
+      </button>
+      <div amarra-hook="dropdown" class="relative">
+        <button type="button" data-amarra-dropdown-button aria-expanded="false" class="flex items-center gap-2 rounded px-1.5 py-1 transition-colors hover:bg-surface-container">
+          <img src="/static/img/avatar.png" alt="" class="h-7 w-7 rounded-full bg-surface-container-high" width="28" height="28" />
+          <span class="hidden text-left lg:block">
+            <span class="block max-w-[16rem] truncate font-label-md text-label-md leading-tight text-on-surface">{{ if .UserEmail }}{{ .UserEmail }}{{ else }}DevOps Admin{{ end }}</span>
+            <span class="block font-label-sm text-label-sm text-outline">DevOps Admin</span>
+          </span>
+          <span class="material-symbols-outlined text-[18px] text-outline">expand_more</span>
+        </button>
+        <div data-amarra-dropdown-menu hidden class="absolute right-0 mt-1 w-56 rounded-lg border border-surface-bright bg-surface-container-high p-1 shadow-xl">
+          <a href="/settings" class="flex items-center gap-2 rounded px-3 py-2 font-body-sm text-body-sm text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface">
+            <span class="material-symbols-outlined text-[18px]">settings</span> Settings
+          </a>
+          <.form action="/logout" method="post">
+            <button type="submit" class="flex w-full items-center gap-2 rounded px-3 py-2 text-left font-body-sm text-body-sm text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface">
+              <span class="material-symbols-outlined text-[18px]">logout</span> Sair
+            </button>
+          </.form>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
 {{ end }}
