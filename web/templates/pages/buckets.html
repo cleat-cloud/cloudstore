@@ -63,6 +63,27 @@
   </div>
   {{ end }}
 
+  {{ if $vm.NeedsFirstScan }}
+  <div class="flex flex-col items-start justify-between gap-space-md rounded-xl border border-primary/30 bg-surface-container-low p-space-md shadow-md md:flex-row md:items-center">
+    <div class="flex items-start gap-space-md md:items-center">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface-container">
+        <span class="material-symbols-outlined text-2xl text-primary">sync</span>
+      </div>
+      <div>
+        <p class="font-headline-sm text-headline-sm font-semibold text-on-surface">{{ t "buckets.first_scan_title" }}</p>
+        <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "buckets.first_scan_body" }}</p>
+      </div>
+    </div>
+    <form action="/buckets/refresh" method="post" data-amarra-skip class="shrink-0">
+      {{ csrfField .CSRFToken }}
+      <button type="submit" class="flex h-8 items-center gap-1.5 rounded bg-primary px-space-md font-label-md text-label-md font-semibold text-on-primary shadow-sm transition-colors hover:bg-primary-fixed">
+        <span class="material-symbols-outlined text-base leading-none">play_arrow</span>
+        <span>{{ t "buckets.first_scan_cta" }}</span>
+      </button>
+    </form>
+  </div>
+  {{ end }}
+
   <!-- KPI grid -->
   <div class="grid grid-cols-1 gap-space-md md:grid-cols-2 xl:grid-cols-4">
     <div class="relative flex flex-col justify-between overflow-hidden rounded-xl bg-surface-container p-space-md shadow-md">
@@ -205,13 +226,13 @@
         <thead>
           <tr class="h-9 select-none bg-surface-container-high font-label-sm text-label-sm uppercase tracking-wider text-outline">
             <th class="px-space-md font-semibold">{{ t "buckets.table.name" }}</th>
-            <th class="px-space-md font-semibold">{{ t "buckets.table.region" }}</th>
+            <th class="hidden px-space-md font-semibold md:table-cell">{{ t "buckets.table.region" }}</th>
             <th class="px-space-md font-semibold">{{ t "buckets.table.class" }}</th>
-            <th class="px-space-md font-semibold">{{ t "buckets.table.access" }}</th>
-            <th class="px-space-md font-semibold">{{ t "buckets.table.versioning" }}</th>
+            <th class="hidden px-space-md font-semibold sm:table-cell">{{ t "buckets.table.access" }}</th>
+            <th class="hidden px-space-md font-semibold xl:table-cell">{{ t "buckets.table.versioning" }}</th>
             <th class="px-space-md text-right font-semibold">{{ t "buckets.table.storage" }}</th>
-            <th class="px-space-md text-right font-semibold">{{ t "buckets.table.objects" }}</th>
-            <th class="px-space-md font-semibold">{{ t "buckets.table.created" }}</th>
+            <th class="hidden px-space-md text-right font-semibold lg:table-cell">{{ t "buckets.table.objects" }}</th>
+            <th class="hidden px-space-md font-semibold xl:table-cell">{{ t "buckets.table.created" }}</th>
             <th class="px-space-md text-right font-semibold">{{ t "buckets.table.actions" }}</th>
           </tr>
         </thead>
@@ -230,7 +251,7 @@
                 </div>
               </div>
             </td>
-            <td class="px-space-md">
+            <td class="hidden px-space-md md:table-cell">
               <span class="flex items-center gap-1.5 font-body-sm text-body-sm text-on-surface-variant">
                 <span class="h-2 w-2 rounded-full bg-primary"></span>
                 {{ .Region }}
@@ -239,7 +260,7 @@
             <td class="px-space-md">
               <span class="inline-flex rounded bg-surface-container-low px-2 py-0.5 font-code-sm text-code-sm {{ if eq .Class "Archive" }}text-tertiary{{ else if eq .Class "Nearline" }}text-primary{{ else }}text-on-surface{{ end }}">{{ .Class }}</span>
             </td>
-            <td class="px-space-md">
+            <td class="hidden px-space-md sm:table-cell">
               {{ if .Public }}
               <span class="inline-flex items-center gap-1.5 rounded bg-tertiary-container/20 px-2 py-0.5 font-label-sm text-label-sm text-tertiary">
                 <span class="h-1.5 w-1.5 rounded-full bg-tertiary"></span>
@@ -252,15 +273,15 @@
               </span>
               {{ end }}
             </td>
-            <td class="px-space-md">
+            <td class="hidden px-space-md xl:table-cell">
               <span class="inline-flex items-center gap-1 font-body-sm text-body-sm text-on-surface">
                 <span class="material-symbols-outlined text-base leading-none text-secondary">check_circle</span>
                 {{ t "buckets.badge.enabled" }}
               </span>
             </td>
             <td class="px-space-md text-right font-code-sm text-code-sm font-semibold text-on-surface">{{ .Bytes }}</td>
-            <td class="px-space-md text-right font-code-sm text-code-sm text-on-surface-variant">{{ .Objects }}</td>
-            <td class="px-space-md font-code-sm text-code-sm text-outline">{{ .Created }}</td>
+            <td class="hidden px-space-md text-right font-code-sm text-code-sm text-on-surface-variant lg:table-cell">{{ .Objects }}</td>
+            <td class="hidden px-space-md font-code-sm text-code-sm text-outline xl:table-cell">{{ .Created }}</td>
             <td class="px-space-md text-right">
               <div amarra-hook="dropdown" class="relative inline-block text-left">
                 <button type="button" data-amarra-dropdown-button aria-expanded="false" title="{{ t "buckets.table.actions" }}" class="rounded p-1 text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface">

@@ -1,1 +1,1 @@
-<form action="{{ .Action }}" method="{{ if .Method }}{{ .Method }}{{ else }}post{{ end }}"{{ if .Enctype }} enctype="{{ .Enctype }}"{{ end }}>{{ csrfField $.CSRFToken }}{{ .Inner }}</form>
+<form action="{{ .Action }}" method="{{ if .Method }}{{ .Method }}{{ else }}post{{ end }}"{{ if .Enctype }} enctype="{{ .Enctype }}"{{ end }}{{ if .Skip }} data-amarra-skip{{ end }}>{{ csrfField $.CSRFToken }}{{ .Inner }}</form>

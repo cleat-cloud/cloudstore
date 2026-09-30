@@ -134,6 +134,10 @@ func newConsoleService(cfg cais.Config, s *store.SQLiteStore) (*console.Service,
 	if err := seedAccountFromEnv(service); err != nil {
 		log.Printf("cloudstore: seed account: %v", err)
 	}
+	// Demo mode should look alive on the first visit (KPIs, charts, audit).
+	if err := service.SeedDemo(context.Background()); err != nil {
+		log.Printf("cloudstore: seed demo data: %v", err)
+	}
 	return service, nil
 }
 

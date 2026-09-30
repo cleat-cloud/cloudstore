@@ -60,6 +60,7 @@ type bucketsVM struct {
 	LastScan         string
 	MissingLifecycle int
 	OptimizerBucket  string
+	NeedsFirstScan   bool
 
 	Error     string
 	FormError string
@@ -121,17 +122,23 @@ func (h *BucketsHandler) renderOverview(w http.ResponseWriter, r *http.Request, 
 
 	if scans, err := h.deps.Console.Scans(); err == nil {
 		var lastScan time.Time
+		if len(scans) == 0 && len(buckets) > 0 {
+			vm.NeedsFirstScan = true
+		}
 		for _, bucket := range buckets {
 			usage, ok := scans[bucket.Name]
 			if !ok {
-				vm.MissingLifecycle++
-				if vm.OptimizerBucket == "" {
-					vm.OptimizerBucket = bucket.Name
-				}
 				continue
 			}
 			if usage.ScannedAt.After(lastScan) {
 				lastScan = usage.ScannedAt
+			}
+			// Only a scanned bucket can tell whether it has lifecycle rules.
+			if usage.Class == "Standard" {
+				vm.MissingLifecycle++
+				if vm.OptimizerBucket == "" {
+					vm.OptimizerBucket = bucket.Name
+				}
 			}
 		}
 		if !lastScan.IsZero() {

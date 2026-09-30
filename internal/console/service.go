@@ -13,6 +13,7 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 
 	"github.com/cleat-cloud/cloudstore/internal/crypto"
+	"github.com/cleat-cloud/cloudstore/internal/format"
 	"github.com/cleat-cloud/cloudstore/internal/models"
 	"github.com/cleat-cloud/cloudstore/internal/storage"
 	"github.com/cleat-cloud/cloudstore/internal/store"
@@ -294,6 +295,29 @@ func (s *Service) UsageHistory(days int) ([]models.UsagePoint, error) {
 // Scans exposes the latest per-bucket usage for KPI and table rendering.
 func (s *Service) Scans() (map[string]store.BucketUsage, error) {
 	return s.store.BucketScans()
+}
+
+// SeedDemo prepares demo mode before the first page view: one scan pass over
+// the generated buckets, the 30-day history and the matching audit entry. It
+// is a no-op for live accounts and when usage already exists, so the console
+// never opens with empty KPIs, charts and audit trail.
+func (s *Service) SeedDemo(ctx context.Context) error {
+	active, err := s.Active(ctx)
+	if err != nil || active.Live {
+		return err
+	}
+	scans, err := s.store.BucketScans()
+	if err != nil || len(scans) > 0 {
+		return err
+	}
+	summary, err := s.Refresh(ctx)
+	if err != nil {
+		return fmt.Errorf("seed demo scan: %w", err)
+	}
+	return s.Audit(models.AuditEvent{
+		At: time.Now().UTC(), Actor: "system", Action: "ScanBuckets", Target: "b2://*",
+		Detail: fmt.Sprintf("%d buckets · %s", summary.Buckets, format.Bytes(summary.Bytes)), Status: 200,
+	})
 }
 
 // Audit records one console operation for the audit trail.

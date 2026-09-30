@@ -10,7 +10,7 @@
   <div class="rounded-xl border border-surface-bright bg-surface-container p-6 shadow-2xl">
     <h2 class="font-headline-md text-headline-md text-on-surface">{{ t "auth.login_title" }}</h2>
     <div class="mt-4">
-      <.form action="/login" method="post">
+      <.form action="/login" method="post" skip="true">
         <.input name="email" type="email" label="{{ t "auth.email_label" }}" value="{{ .Email }}" error="{{ fieldError .Errors "email" }}" />
         <.password name="password" label="{{ t "auth.password_label" }}" error="{{ fieldError .Errors "password" }}" autocomplete="current-password" required="required" />
         <div class="mt-4">
