@@ -1,12 +1,12 @@
 {
-  "name": "cloudstore",
-  "short_name": "cloudstore",
-  "description": "cloudstore — powered by Cais",
+  "name": "CloudStore — Storage Console",
+  "short_name": "CloudStore",
+  "description": "Manage Backblaze B2 buckets, objects and governance policies.",
   "start_url": "/",
-  "display": "fullscreen",
-  "background_color": "#081014",
-  "theme_color": "#c9893a",
-  "orientation": "portrait-primary",
+  "display": "standalone",
+  "background_color": "#031427",
+  "theme_color": "#031427",
+  "orientation": "any",
   "icons": [
     {
       "src": "/static/icons/icon-192.png",
