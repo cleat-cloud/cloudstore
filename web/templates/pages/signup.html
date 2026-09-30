@@ -1,25 +1,42 @@
 {{ define "content" }}
-<div class="w-full max-w-sm">
-  <div class="mb-6 flex flex-col items-center gap-3">
-    <img src="/static/icons/icon-192.png" alt="" class="h-12 w-12 rounded-xl" width="48" height="48" />
-    <p class="font-headline-lg text-headline-lg text-on-surface">CloudStore</p>
-  </div>
-  <div class="rounded-xl border border-surface-bright bg-surface-container p-6 shadow-2xl">
-    <h2 class="font-headline-md text-headline-md text-on-surface">{{ t "auth.signup_title" }}</h2>
-    <div class="mt-4">
-      <.form action="/signup" method="post" skip="true">
-        <.input name="email" type="email" label="{{ t "auth.email_label" }}" value="{{ .Email }}" error="{{ fieldError .Errors "email" }}" />
-        <.password name="password" label="{{ t "auth.password_label" }}" error="{{ fieldError .Errors "password" }}" autocomplete="new-password" required="required" />
-        <.password name="password_confirmation" label="{{ t "auth.password_confirmation_label" }}" error="{{ fieldError .Errors "password_confirmation" }}" autocomplete="new-password" required="required" />
-        <div class="mt-4">
-          <.button type="submit" class="w-full">{{ t "auth.signup_submit" }}</.button>
-        </div>
-      </.form>
+<div class="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-surface-bright/60 bg-surface-container shadow-2xl lg:grid-cols-2">
+  {{ template "auth_brand" . }}
+  <div class="auth-card flex flex-col gap-space-lg p-6 sm:p-8">
+    <div class="flex items-center gap-3 lg:hidden">
+      <img src="/static/icons/icon-192.png" alt="" class="h-10 w-10 rounded-xl" width="40" height="40" />
+      <div class="min-w-0">
+        <p class="font-headline-md text-headline-md tracking-tight text-on-surface">CloudStore</p>
+        <p class="truncate font-label-sm text-label-sm uppercase tracking-[0.22em] text-outline">{{ t "auth.console_subtitle" }}</p>
+      </div>
     </div>
-    <p class="mt-4 text-center font-body-sm text-body-sm text-on-surface-variant">
-      {{ t "auth.login_prompt" }}
-      <a href="/login" class="text-primary hover:underline">{{ t "auth.login_title" }}</a>
-    </p>
+
+    <div class="space-y-1">
+      <h1 class="font-headline-lg text-headline-lg text-on-surface">{{ t "auth.signup_title" }}</h1>
+      <p class="font-body-sm text-body-sm text-on-surface-variant">{{ t "auth.signup_subtitle" }}</p>
+    </div>
+
+    <.form action="/signup" method="post" skip="true">
+      <.input name="email" type="email" label="{{ t "auth.email_label" }}" value="{{ .Email }}" error="{{ fieldError .Errors "email" }}" />
+      <.password name="password" label="{{ t "auth.password_label" }}" error="{{ fieldError .Errors "password" }}" autocomplete="new-password" required="required" />
+      <.password name="password_confirmation" label="{{ t "auth.password_confirmation_label" }}" error="{{ fieldError .Errors "password_confirmation" }}" autocomplete="new-password" required="required" />
+      <div class="mt-5">
+        <.button type="submit" class="w-full">
+          <span class="material-symbols-outlined text-base leading-none">person_add</span>
+          {{ t "auth.signup_submit" }}
+        </.button>
+      </div>
+    </.form>
+
+    <div class="flex items-center gap-3 font-label-sm text-label-sm uppercase tracking-wider text-outline">
+      <span class="h-px flex-1 bg-outline-variant/40"></span>
+      {{ t "auth.or" }}
+      <span class="h-px flex-1 bg-outline-variant/40"></span>
+    </div>
+
+    <a href="/login" class="flex h-9 items-center justify-center gap-2 rounded border border-outline-variant/40 bg-surface-container-low font-label-md text-label-md text-on-surface transition-colors hover:bg-surface-container-high">
+      <span class="material-symbols-outlined text-base leading-none">login</span>
+      {{ t "auth.login_title" }}
+    </a>
   </div>
 </div>
 {{ end }}

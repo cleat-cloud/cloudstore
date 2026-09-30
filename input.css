@@ -140,6 +140,16 @@
     @apply min-h-screen bg-surface text-on-surface;
   }
 
+  /* Auth screens breathe: taller controls than the dense console tables. */
+  .auth-card input:not([type="checkbox"]),
+  .auth-card select {
+    height: 2.5rem;
+  }
+
+  .auth-card button[type="submit"] {
+    height: 2.25rem;
+  }
+
   .cais-password-wrap {
     @apply relative;
   }
