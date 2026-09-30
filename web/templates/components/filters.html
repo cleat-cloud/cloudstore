@@ -1,0 +1,5 @@
+<form action="{{ .Action }}" method="get"{{ if .Frame }} data-amarra-frame="{{ .Frame }}"{{ end }} class="flex flex-wrap items-end gap-3 border border-foam/10 bg-ink/60 p-4">
+  {{ .Inner }}
+  <button type="submit" class="bg-copper px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-ink hover:bg-foam transition-colors">{{ if .Submit }}{{ .Submit }}{{ else }}Filter{{ end }}</button>
+  {{ if .Clear }}<a href="{{ .Clear }}" class="px-2 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-foam/50 hover:text-foam">Clear</a>{{ end }}
+</form>

@@ -1,0 +1,4 @@
+<button
+  type="{{ if .Type }}{{ .Type }}{{ else }}button{{ end }}"
+  class="{{ if .Class }}{{ .Class }}{{ else }}inline-flex items-center justify-center bg-copper hover:bg-foam text-ink font-medium py-2 px-4{{ end }}"
+  {{- if .Click }} amarra-click="{{ .Click }}"{{ end }}>{{ .Inner }}</button>

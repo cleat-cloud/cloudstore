@@ -1,0 +1,1 @@
+<form action="{{ .Action }}" method="{{ if .Method }}{{ .Method }}{{ else }}post{{ end }}"{{ if .Enctype }} enctype="{{ .Enctype }}"{{ end }}>{{ csrfField $.CSRFToken }}{{ .Inner }}</form>

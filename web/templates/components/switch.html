@@ -1,0 +1,13 @@
+<label class="inline-flex items-center gap-3 text-sm text-foam" for="{{ .Name }}">
+  <input
+    type="checkbox"
+    class="peer sr-only"
+    id="{{ .Name }}"
+    name="{{ .Name }}"
+    value="{{ if .Value }}{{ .Value }}{{ else }}true{{ end }}"
+    {{- if .Checked }} checked{{ end }}
+    {{- if .Error }} aria-invalid="true"{{ end }}
+  >
+  <span class="h-6 w-10 shrink-0 rounded-full bg-foam/20 p-0.5 after:block after:h-5 after:w-5 after:rounded-full after:bg-foam after:transition-transform peer-checked:bg-copper peer-checked:after:translate-x-4 peer-focus-visible:ring-2 peer-focus-visible:ring-copper" aria-hidden="true"></span>
+  {{ .Label }}
+</label>

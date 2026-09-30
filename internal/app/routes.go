@@ -12,17 +12,12 @@ import (
 
 func registerRoutes(r *cais.Router, deps Deps, cfg cais.Config) {
 	home := handlers.NewHomeHandler(deps.Views, deps.Site, deps.Catalog, cfg)
-	contact := handlers.NewContactHandler(deps.Views, deps.Store, deps.Site, deps.Catalog, cfg)
-	dashboard := handlers.NewDashboardHandler(deps.Views, deps.Store, deps.Site, deps.Catalog, cfg)
 	auth := handlers.NewAuthHandler(deps.Views, deps.Store, deps.Site, deps.Store.Sessions(), cfg, deps.Catalog)
 
 	loginLimit := middleware.NewRateLimiter(10, cfg)
 	resetLimit := middleware.NewRateLimiter(10, cfg)
-	contactLimit := middleware.NewRateLimiter(20, cfg)
 
 	r.Get("/", home.ServeHTTP)
-	r.Get("/contact", contact.Get)
-	r.Post("/contact", contactLimit.Middleware(http.HandlerFunc(contact.Post)).ServeHTTP)
 	r.Get("/login", auth.Login)
 	r.Post("/login", loginLimit.Middleware(http.HandlerFunc(auth.LoginPost)).ServeHTTP)
 	r.Get("/signup", auth.SignUp)
@@ -33,7 +28,6 @@ func registerRoutes(r *cais.Router, deps Deps, cfg cais.Config) {
 	r.Post("/reset-password", resetLimit.Middleware(http.HandlerFunc(auth.ResetPasswordPost)).ServeHTTP)
 	r.Post("/logout", auth.LogoutPost)
 	r.Post("/locale", handlers.PostLocale(cfg))
-	r.Get("/dashboard", middleware.RequireAuthFunc("/login", dashboard.ServeHTTP))
 }
 
 func registerLiveViews(hub *live.Hub, deps Deps) {

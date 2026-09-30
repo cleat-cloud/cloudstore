@@ -1,0 +1,7 @@
+<div class="border border-dashed border-foam/20 bg-ink/40 px-6 py-10 text-center">
+  <p class="font-serif text-lg text-foam">{{ .Title }}</p>
+  <div class="mt-2 text-sm text-foam/70">{{ .Inner }}</div>
+  {{ if .Href }}
+  <a href="{{ .Href }}" class="mt-4 inline-block bg-copper px-5 py-2 font-mono text-[11px] uppercase tracking-[0.22em] text-ink hover:bg-foam transition-colors">{{ .Action }}</a>
+  {{ end }}
+</div>

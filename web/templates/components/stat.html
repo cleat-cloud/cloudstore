@@ -1,0 +1,10 @@
+<div class="border border-foam/10 bg-ink/60 p-4">
+  <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-foam/50">{{ .Label }}</p>
+  {{ if .Href }}
+  <a href="{{ .Href }}" class="mt-1 block"><span class="font-serif text-2xl text-foam">{{ .Value }}</span></a>
+  {{ else }}
+  <p class="mt-1 font-serif text-2xl text-foam">{{ .Value }}</p>
+  {{ end }}
+  {{ if .Delta }}<p class="mt-1 text-xs text-copper">{{ .Delta }}</p>{{ end }}
+  {{ if .Hint }}<p class="mt-1 text-xs text-foam/50">{{ .Hint }}</p>{{ end }}
+</div>

@@ -1,0 +1,13 @@
+<nav class="flex items-center justify-between">
+  {{ if .HasPrev }}
+  <a href="{{ paginationHref .Base .PrevPage }}" class="text-copper hover:text-foam">← Previous</a>
+  {{ else }}
+  <span></span>
+  {{ end }}
+  <span class="text-sm text-foam/50">Page {{ .Page }}</span>
+  {{ if .HasNext }}
+  <a href="{{ paginationHref .Base .NextPage }}" class="text-copper hover:text-foam">Next →</a>
+  {{ else }}
+  <span></span>
+  {{ end }}
+</nav>

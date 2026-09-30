@@ -1,0 +1,18 @@
+{{ $sort := .Sort }}{{ $dir := .Dir }}{{ $frame := .Frame }}<div class="overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead>
+      <tr class="border-b border-foam/10 text-left">
+        {{ range .Cols }}{{ $c := . }}
+        <th scope="col" class="px-3 py-2 font-mono text-[10px] uppercase tracking-[0.22em] text-foam/50"{{ if $c.Sortable }} aria-sort="{{ if and (eq $c.Field $sort) (eq $dir "desc") }}descending{{ else if eq $c.Field $sort }}ascending{{ else }}none{{ end }}"{{ end }}>
+          {{ if $c.Sortable }}
+          <a class="hover:text-foam" href="{{ sortHref .Base $c.Field $sort $dir }}"{{ if $frame }} data-amarra-frame="{{ $frame }}"{{ end }}>{{ $c.Label }}</a>
+          {{ else }}
+          {{ $c.Label }}
+          {{ end }}
+        </th>
+        {{ end }}
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-foam/5">{{ .Inner }}</tbody>
+  </table>
+</div>
