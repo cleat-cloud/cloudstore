@@ -1,101 +1,110 @@
-# cloudstore
+# CloudStore
 
-Full-stack Go app built with [Amarra](https://github.com/puppe1990/amarra-cais): HTML templates, Tailwind, and SQLite.
+Storage console for **Backblaze B2 Cloud Storage**: browse buckets and objects, upload and delete
+files, edit lifecycle/CORS governance, and keep a local audit trail. Built with
+[amarra-cais](https://github.com/puppe1990/amarra-cais) — Go + Amarra Views + Drive + SQLite, no SPA
+and no front-end build step.
+
+![CloudStore console](docs/console.png)
+
+## What it does
+
+- **Buckets overview** — create/delete buckets; per-bucket region, lifecycle-derived class, access
+  state, scanned storage and object counts, quota gauge and cost estimate ($6/TB/month).
+- **Object browser** — folder navigation, prefix search, multipart uploads, folder creation, bulk
+  delete, and a detail panel with metadata, ETag (MD5/SHA-1), cache-control, retention and
+  presigned download links (B2 download authorization) with 15 min / 1 h / 24 h TTLs.
+- **Configuration & access** — lifecycle rules (hide/delete windows) and CORS rules edited as B2
+  JSON, plus SSE-B2/Object Lock/versioning surfaced per bucket.
+- **Analytics** — 30-day storage curve, class split, status distribution and maintenance history,
+  all derived from the console's own audit trail.
+- **Audit log** — every console operation with actor, target, detail and status.
+- **Accounts** — B2 application keys are sealed with AES-256-GCM under `APP_SECRET` before they
+  touch SQLite. Without an active account the console runs on generated demo data so every screen
+  stays usable.
+- **PWA + link previews** — manifest, service worker, maskable icons, offline page and
+  Open Graph/Twitter metadata for shared links.
 
 ## Stack
 
-- Go 1.26 (net/http stdlib) + Amarra Views + Drive
-- HTML pages (`web/templates/pages/`) + `view.Write` + `amarra.js`
-- Tailwind CSS 3.x
-- SQLite (modernc.org/sqlite, no CGO)
+| Layer     | Choice                                                              |
+| --------- | ------------------------------------------------------------------- |
+| Language  | Go 1.26 (`net/http` stdlib)                                         |
+| Framework | [amarra-cais](https://github.com/puppe1990/amarra-cais) v0.12       |
+| Front end | Amarra Views + Drive (`amarra.js`), Tailwind CSS 3                  |
+| Storage   | SQLite (`modernc.org/sqlite`, no CGO)                               |
+| Providers | Backblaze B2 Native API v4 (`internal/storage/b2`)                  |
+| Demo data | `gofakeit`-backed in-memory provider (`internal/storage/fakestore`) |
+| Fonts     | Self-hosted Geist, JetBrains Mono, Material Symbols                 |
 
 ## Quick start
 
 ```bash
-amarra-cais install  # npm install + go mod tidy
-amarra-cais dev        # http://localhost:8080
-amarra-cais test       # full test suite
-amarra-cais build      # bin/server
+cp .env.example .env      # set APP_SECRET (required in production)
+amarra-cais install       # npm install + go mod tidy + Tailwind
+amarra-cais dev           # http://localhost:8080
 ```
 
-## Amarra CLI
+Development login: `demo@example.com` / `password`.
 
-This app was scaffolded with the Amarra CLI. Useful commands:
-
-```bash
-amarra-cais install               # npm install + go mod tidy
-amarra-cais css                   # build Tailwind
-amarra-cais dev                   # air + tailwind watch
-amarra-cais server                # go run ./cmd/server
-amarra-cais console               # interactive Go REPL + SQL
-amarra-cais g handler <name>      # handler + test + page template
-amarra-cais g resource <name>     # model + migration + admin CRUD
-amarra-cais g page <name>         # page template only
-amarra-cais g migration <name>    # SQL migration file
-amarra-cais test                  # go test ./...
-amarra-cais doctor                # verify setup
-```
-
-## CI and pre-commit
-
-GitHub Actions runs Go tests, `golangci-lint`, Prettier, and `npm test` on every push/PR to `main`.
-
-```bash
-make pre-commit-install   # once: installs git hooks
-make ci                   # test + lint + format-check locally
-```
-
-Pre-commit hooks run: trailing whitespace, Prettier, `goimports`, `go test`, `golangci-lint`, and `npm test`.
-(Install goimports once: `go install golang.org/x/tools/cmd/goimports@latest`.)
-
-## Structure
-
-```
-AGENTS.md          → conventions for LLM/coding agents
-pkg/cais/          → framework (via dependency)
-internal/app/      → bootstrap and routes
-internal/handlers/ → HTTP handlers (view.Write)
-internal/store/    → SQLite + migrations
-web/templates/layouts/ → Amarra layout
-web/templates/pages/   → HTML pages
-web/static/            → CSS + amarra.js + PWA
-cmd/server/        → entry point
-```
-
-See [AGENTS.md](AGENTS.md) for TDD, Amarra views, flash/CSRF, and generator conventions.
-
-## Templates
-
-`view.Load` parses `web/templates/` once at boot:
-
-- `layouts/*.html` — one layout per file; `view.Page{Layout: "app"}` selects it
-- `pages/*.html` and `pages/*/*.html` — the name is the path under `pages/` without `.html`, so `pages/blog/post.html` renders as `view.Page{Name: "blog/post"}`
-- `partials/*.html` — flat only; a nested partial never loads. A partial declares a named template that pages invoke
-- `components/*.html` — flat only; overrides the shipped kit component with the same file name; an unknown `<.x>` tag fails at boot
-
-## Demo data
-
-Seeds and fixtures can use `github.com/puppe1990/amarra-cais/pkg/cais/fakedata` (`Name`, `Title`, `Email`, `Sentence`, `URL`, `Date`); `fakedata.Seed(42)` makes values reproducible in tests.
+Point the console at a real account either from **Settings → Storage Accounts** (application key +
+region) or by exporting `B2_KEY_ID` / `B2_APP_KEY` / `B2_REGION` before boot — a fresh install with
+those variables gets an active account automatically.
 
 ## Environment variables
 
-| Variable | Default       | Description      |
-| -------- | ------------- | ---------------- |
-| PORT     | :8080         | Server port      |
-| DB_PATH  | ./data/app.db | SQLite file path |
-| ENV      | development   | Environment      |
+| Variable                         | Default         | Description                                                    |
+| -------------------------------- | --------------- | -------------------------------------------------------------- |
+| `PORT`                           | `:8080`         | HTTP port (auto-shifts when busy)                              |
+| `ENV`                            | `development`   | `production` enforces `APP_SECRET` + secure cookies            |
+| `APP_URL`                        | —               | Absolute URL for OG images/canonical links (required in prod)  |
+| `LOCALE`                         | `pt`            | Default UI language (`pt` or `en`)                             |
+| `DB_PATH`                        | `./data/app.db` | SQLite file                                                    |
+| `APP_SECRET`                     | —               | Key material that seals B2 application keys (required in prod) |
+| `CLOUDSTORE_QUOTA_BYTES`         | `100 TB`        | Quota shown in the sidebar gauge                               |
+| `B2_KEY_ID` / `B2_APP_KEY`       | —               | Optional B2 application key seeded on boot                     |
+| `B2_REGION` / `B2_ACCOUNT_LABEL` | —               | Optional label/region for the seeded account                   |
+| `MAX_BODY_BYTES`                 | `33554432`      | Request-body cap (raise for larger uploads)                    |
+| `ADMIN_TOKEN`                    | —               | Required by `cfg.Validate()` in production                     |
 
-Health check: GET /health → {"status":"ok"}
+## Commands
 
-Jobs dashboard: GET /jobs (localhost only) — queue counts, failed retry/discard.
+| Command                            | What it does                                |
+| ---------------------------------- | ------------------------------------------- |
+| `amarra-cais dev`                  | air + Tailwind watch on :8080               |
+| `amarra-cais test`                 | `go test ./...`                             |
+| `amarra-cais css` / `make css`     | Rebuild Tailwind into `web/static/css`      |
+| `amarra-cais build` / `make build` | Compile `bin/server`                        |
+| `amarra-cais doctor [--mobile]`    | Verify wiring, PWA assets and mobile checks |
+| `amarra-cais pwa --bump`           | Refresh PWA runtime + cache version         |
+| `npm run fonts`                    | Copy the self-hosted woff2 files            |
+| `make ci`                          | test + lint + format-check                  |
 
-## Testing on phone (LAN)
+## Tests
 
-1. Run `amarra-cais dev` and note the **LAN** URL printed at boot (e.g. `http://192.168.1.10:8080`).
-2. Open that URL in mobile Safari/Chrome on the same Wi‑Fi.
-3. After template or SSE changes, run `amarra-cais pwa --bump` and reinstall the PWA (or clear site data) so the service worker cache refreshes.
-4. Run `amarra-cais doctor --mobile` to catch flash markup, font CSP, and SW cache issues.
+TDD is the contract here: the domain modules were written test-first (red → green) and every screen
+has a headless handler test.
 
-## Brand assets
+| Package                      | Coverage                                                     |
+| ---------------------------- | ------------------------------------------------------------ |
+| `internal/format`            | byte/count/date/money/ratio formatting, faker property tests |
+| `internal/storage`           | bucket-name rules, lifecycle→class derivation                |
+| `internal/storage/b2`        | full B2 v4 wire contract against an `httptest` stub          |
+| `internal/storage/fakestore` | deterministic gofakeit demo dataset                          |
+| `internal/store`             | SQLite `:memory:` — accounts, audit, scans, usage            |
+| `internal/console`           | provider/store orchestration, demo history seeding           |
+| `internal/handlers`          | every page renders + create/delete/upload/save flows         |
 
-Replace the scaffold placeholders before sharing the site: `web/static/favicon.svg`, `web/static/icons/icon.png`, `icon-192.png`, `icon-512.png`, the padded `icon-512-maskable.png`, and the 1200x630 `web/static/og.png`. `amarra-cais doctor` warns while they are still the defaults.
+```bash
+go test ./... -race -count=1
+```
+
+Fixtures come from `gofakeit`; `fakedata.Seed(42)` pins reproducible sequences in tests.
+
+## CI, hooks and deploy
+
+- `.github/workflows/ci.yml` runs Go tests (`-race`), `golangci-lint`, Prettier and `npm test`.
+- `.pre-commit-config.yaml` keeps the same gate locally (`pre-commit install`).
+- Deploy: `amarra-cais build --os linux --arch amd64 -o bin/server-linux`, ship `web/static` beside
+  the binary, run under systemd (`deploy/systemd/cais-app.service.example`), then
+  `amarra-cais pwa --bump` after asset changes.

@@ -140,3 +140,27 @@ amarra-cais jobs work | status
 - Mock the database (use SQLite `:memory:`)
 - Grow files past ~500 lines without splitting
 - Ship features without a headless test
+
+## CloudStore specifics
+
+- **Providers** — `internal/storage.Provider` is the contract; `internal/storage/b2` (B2 Native API
+  v4) is the live backend and `internal/storage/fakestore` (gofakeit) powers demo mode and tests.
+  `internal/console.Service` resolves the active account per request: sealed key → B2 client, or the
+  demo store when no account is active.
+- **Secrets** — B2 application keys are stored AES-256-GCM-sealed (`internal/crypto`, key derived
+  from `APP_SECRET`). Never log or render a plaintext key; `StorageAccountSecret` returns ciphertext.
+- **Screens** — `web/templates/pages/{buckets,objects,policies,analytics,audit,settings}.html`. Each
+  handler builds a `*VM` struct (`bucketsVM`, `objectsVM`, …) and passes it as `VM` in the page data
+  plus the `Title` / `ActiveNav` / `Bucket` chrome keys.
+- **Chrome data** — `consoleHandler.consoleData` assembles the sidebar/topbar (account, quota,
+  user). State-changing POSTs carry `data-amarra-skip`: Drive only morphs `#amarra-main`, so a full
+  reload is what keeps the rail's quota/account truthful.
+- **Styling** — CloudStore M3 tokens live in `tailwind.config.js`; the scaffold aliases
+  (`ink`/`foam`/`copper`/`tide`) are repointed, keep them for kit components. Icons use the
+  self-hosted Material Symbols class; never link Google Fonts (CSP keeps `font-src 'self'`).
+- **Audit** — every console operation goes through `consoleHandler.audit` (actor, action, target,
+  detail, status); the analytics and audit screens read the same table.
+- **Demo mode** — without an active account the console runs on `fakestore` and backfills a 30-day
+  usage curve (`console.seedDemoHistory`); real accounts accumulate samples through `Refresh`.
+- **Commands** — `npm run fonts` refreshes the woff2 files, `amarra-cais pwa --bump` after static
+  asset changes, `amarra-cais doctor [--mobile]` before shipping.
