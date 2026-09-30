@@ -67,7 +67,9 @@ func TestDecrypt_tamperedPayloadFails(t *testing.T) {
 }
 
 func TestDeriveKey_isStable(t *testing.T) {
-	if string(DeriveKey("abc")) != string(DeriveKey("abc")) {
+	first := DeriveKey("abc")
+	second := DeriveKey("abc")
+	if string(first) != string(second) {
 		t.Fatal("DeriveKey is not deterministic")
 	}
 	if string(DeriveKey("abc")) == string(DeriveKey("abd")) {
