@@ -1,7 +1,7 @@
 <div>
   <label class="mb-1 block font-label-sm text-label-sm uppercase tracking-wider text-outline" for="{{ .Name }}">{{ .Label }}</label>
   <input
-    class="user-invalid:border-error h-8 w-full rounded border border-outline-variant/40 bg-surface-container-lowest px-3 font-body-sm text-body-sm text-on-surface placeholder:text-outline transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary-container"
+    class="user-invalid:border-error h-8 w-full rounded border border-outline-variant/40 bg-surface-container-lowest px-3 font-body-sm text-body-sm text-on-surface placeholder:text-outline transition-colors focus:border-primary-container focus:outline-none focus:ring-2 focus:ring-primary-container/20"
     id="{{ .Name }}"
     name="{{ .Name }}"
     type="{{ if .Type }}{{ .Type }}{{ else }}text{{ end }}"
