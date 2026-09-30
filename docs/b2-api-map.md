@@ -16,31 +16,31 @@ so the console never displays numbers it cannot source (see "Honest limits").
 
 ## Operations
 
-| B2 operation                        | Console feature                                                        | Status |
-| ----------------------------------- | ---------------------------------------------------------------------- | ------ |
-| `b2_authorize_account`              | account connection (Settings → Storage Accounts), token cache           | ✅     |
-| `b2_list_buckets`                   | buckets overview, bucket metadata/settings, `Region` label              | ✅     |
-| `b2_create_bucket`                  | "Criar Bucket" (private/public, name validated client-side)             | ✅     |
-| `b2_delete_bucket`                  | row action "Excluir" (B2 refuses non-empty buckets → flash message)     | ✅     |
-| `b2_update_bucket`                  | lifecycle rules, CORS rules, default SSE, Object Lock default retention | ✅     |
-| `b2_list_file_names`                | object browser (folders via `delimiter=/`, `startFileName` pagination)  | ✅     |
-| `b2_list_file_versions`             | object versions (`?versions=1`): hide markers, per-version delete       | ✅     |
-| `b2_get_file_info`                  | object detail: SHA-1, MD5, SSE mode, retention, legal hold              | ✅     |
-| `b2_get_upload_url` + `b2_upload_file` | uploads (single request, browser-side multipart)                     | ✅     |
-| `b2_delete_file_version`            | delete (resolves the fileId first) and per-version delete               | ✅     |
-| `b2_hide_file`                      | row action "Ocultar" (soft delete; keeps the version history)           | ✅     |
-| `b2_copy_file`                      | row action "Copiar", version "Restaurar" (copy a version to the name)   | ✅     |
-| `b2_get_download_authorization`     | presigned URL (15 min / 1 h / 24 h) in the detail panel                  | ✅     |
-| `b2_download_file_by_name` / `_by_id` | direct download through the console (streaming proxy, no key exposure) | ✅     |
-| `b2_update_file_retention`          | detail panel: set/extend governance or compliance retention             | ✅     |
-| `b2_update_file_legal_hold`         | detail panel: legal hold on/off (needs `writeFileLegalHolds`)           | ✅     |
-| `b2_list_keys`                      | Settings/policies: application keys with capabilities + restrictions    | ⏳     |
-| `b2_get/set_bucket_notification_rules` | audit pipeline card (event notification targets)                    | ⏳     |
-| `b2_start_large_file` + `b2_get_upload_part_url` + `b2_upload_part` + `b2_finish_large_file` | uploads above the simple-upload limit (5 GB) /> `MAX_BODY_BYTES` | ⏳     |
-| `b2_list_unfinished_large_files` + `b2_cancel_large_file` | upload queue / cancelled multipart parts            | ⏳     |
-| `b2_list_parts`                     | part inspector for an unfinished large file                             | ⏳     |
-| `b2_create_key` / `b2_delete_key`   | scoped keys created from the console                                    | ❌ not planned |
-| `b2_cancel_large_file`              | (see unfinished files)                                                  | ⏳     |
+| B2 operation                                                                                 | Console feature                                                         | Status         |
+| -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | -------------- |
+| `b2_authorize_account`                                                                       | account connection (Settings → Storage Accounts), token cache           | ✅             |
+| `b2_list_buckets`                                                                            | buckets overview, bucket metadata/settings, `Region` label              | ✅             |
+| `b2_create_bucket`                                                                           | "Criar Bucket" (private/public, name validated client-side)             | ✅             |
+| `b2_delete_bucket`                                                                           | row action "Excluir" (B2 refuses non-empty buckets → flash message)     | ✅             |
+| `b2_update_bucket`                                                                           | lifecycle rules, CORS rules, default SSE, Object Lock default retention | ✅             |
+| `b2_list_file_names`                                                                         | object browser (folders via `delimiter=/`, `startFileName` pagination)  | ✅             |
+| `b2_list_file_versions`                                                                      | object versions (`?versions=1`): hide markers, per-version delete       | ✅             |
+| `b2_get_file_info`                                                                           | object detail: SHA-1, MD5, SSE mode, retention, legal hold              | ✅             |
+| `b2_get_upload_url` + `b2_upload_file`                                                       | uploads (single request, browser-side multipart)                        | ✅             |
+| `b2_delete_file_version`                                                                     | delete (resolves the fileId first) and per-version delete               | ✅             |
+| `b2_hide_file`                                                                               | row action "Ocultar" (soft delete; keeps the version history)           | ✅             |
+| `b2_copy_file`                                                                               | row action "Copiar", version "Restaurar" (copy a version to the name)   | ✅             |
+| `b2_get_download_authorization`                                                              | presigned URL (15 min / 1 h / 24 h) in the detail panel                 | ✅             |
+| `b2_download_file_by_name` / `_by_id`                                                        | direct download through the console (streaming proxy, no key exposure)  | ✅             |
+| `b2_update_file_retention`                                                                   | detail panel: set/extend governance or compliance retention             | ✅             |
+| `b2_update_file_legal_hold`                                                                  | detail panel: legal hold on/off (needs `writeFileLegalHolds`)           | ✅             |
+| `b2_list_keys`                                                                               | Settings/policies: application keys with capabilities + restrictions    | ⏳             |
+| `b2_get/set_bucket_notification_rules`                                                       | audit pipeline card (event notification targets)                        | ⏳             |
+| `b2_start_large_file` + `b2_get_upload_part_url` + `b2_upload_part` + `b2_finish_large_file` | uploads above the simple-upload limit (5 GB) /> `MAX_BODY_BYTES`        | ⏳             |
+| `b2_list_unfinished_large_files` + `b2_cancel_large_file`                                    | upload queue / cancelled multipart parts                                | ⏳             |
+| `b2_list_parts`                                                                              | part inspector for an unfinished large file                             | ⏳             |
+| `b2_create_key` / `b2_delete_key`                                                            | scoped keys created from the console                                    | ❌ not planned |
+| `b2_cancel_large_file`                                                                       | (see unfinished files)                                                  | ⏳             |
 
 Legend: ✅ implemented · ⏳ next pass · ❌ deliberately out of scope.
 
