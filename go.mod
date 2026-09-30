@@ -3,6 +3,7 @@ module github.com/puppe1990/cloudstore
 go 1.26.4
 
 require (
+	github.com/brianvoe/gofakeit/v7 v7.17.1
 	github.com/puppe1990/amarra-cais v0.12.2
 	modernc.org/sqlite v1.53.0
 )
