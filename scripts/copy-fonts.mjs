@@ -14,7 +14,10 @@ const fonts = [
     "node_modules/@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2",
     "jetbrains-mono-variable.woff2",
   ],
-  ["node_modules/material-symbols/material-symbols-outlined.woff2", "material-symbols-outlined.woff2"],
+  [
+    "node_modules/material-symbols/material-symbols-outlined.woff2",
+    "material-symbols-outlined.woff2",
+  ],
 ];
 
 let missing = 0;

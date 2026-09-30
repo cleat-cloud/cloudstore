@@ -4,6 +4,7 @@ web/static/css/styles.css
 node_modules/
 tmp/
 .air/
+.playwright-cli/
 *.db
 .env
 .env.*
