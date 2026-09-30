@@ -4,7 +4,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="dark light" />
+    <script>
+      try {
+        if (localStorage.getItem("amarra-theme") === "light") document.documentElement.classList.add("light");
+      } catch (e) {}
+    </script>
     {{ if .CSRFToken }}<meta name="csrf-token" content="{{ .CSRFToken }}" />{{ end }}
     <title>{{ if .Title }}{{ .Title }} · CloudStore{{ else }}CloudStore{{ end }}</title>
     <meta name="description" content="Console de buckets do Backblaze B2: buckets, objetos, políticas e auditoria." />
@@ -225,6 +230,18 @@
         {{ .StatusLabel }}
       </span>
       {{ end }}
+      <button
+        type="button"
+        class="inline-flex h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface"
+        amarra-hook="theme"
+        data-amarra-theme-color="#f6f8fc"
+        data-amarra-theme-color-off="#031427"
+        title="{{ t "layout.theme" }}"
+        aria-label="{{ t "layout.theme" }}"
+      >
+        <span class="material-symbols-outlined cs-theme-icon-light text-[20px]">light_mode</span>
+        <span class="material-symbols-outlined cs-theme-icon-dark text-[20px]">dark_mode</span>
+      </button>
       <a href="https://www.backblaze.com/apidocs/introduction" target="_blank" rel="noopener" class="hidden rounded px-2 py-1 font-label-md text-label-md text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface md:block">Docs</a>
       <button type="button" class="hidden h-8 w-8 items-center justify-center rounded text-on-surface-variant transition-colors hover:bg-surface-container hover:text-on-surface sm:inline-flex" title="{{ t "layout.notifications" }}" aria-label="{{ t "layout.notifications" }}">
         <span class="material-symbols-outlined text-[20px]">notifications</span>

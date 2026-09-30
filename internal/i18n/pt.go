@@ -12,6 +12,7 @@ var ptMessages = map[string]string{
 	"layout.menu":            "Menu",
 	"layout.close_menu":      "Fechar menu",
 	"layout.demo_label":      "Demo",
+	"layout.theme":           "Alternar tema claro/escuro",
 	"layout.demo_region":     "dados locais",
 	"layout.demo_status":     "Demo mode · Healthy",
 	"layout.connected":       "Backblaze B2 · Conectado",

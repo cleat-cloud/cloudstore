@@ -29,10 +29,118 @@
 }
 
 @layer base {
+  /* CloudStore palette as variables: `html.light` (toggled by the header button
+     through amarra-hook="theme") swaps the whole console. Channels, not hex, so
+     Tailwind's /opacity modifiers keep working. */
+  :root {
+    --cs-surface: 3 20 39;
+    --cs-surface-dim: 3 20 39;
+    --cs-surface-bright: 42 58 79;
+    --cs-surface-container-lowest: 0 15 33;
+    --cs-surface-container-low: 11 28 48;
+    --cs-surface-container: 16 32 52;
+    --cs-surface-container-high: 27 43 63;
+    --cs-surface-container-highest: 38 54 74;
+    --cs-surface-variant: 38 54 74;
+    --cs-on-surface: 211 228 254;
+    --cs-on-surface-variant: 194 198 214;
+    --cs-outline: 140 144 159;
+    --cs-outline-variant: 66 71 84;
+    --cs-primary: 173 198 255;
+    --cs-on-primary: 0 46 106;
+    --cs-primary-container: 77 142 255;
+    --cs-on-primary-container: 0 40 93;
+    --cs-primary-fixed: 216 226 255;
+    --cs-primary-fixed-dim: 173 198 255;
+    --cs-inverse-primary: 0 90 194;
+    --cs-secondary: 78 222 163;
+    --cs-on-secondary: 0 56 36;
+    --cs-secondary-container: 0 165 114;
+    --cs-on-secondary-container: 0 49 31;
+    --cs-secondary-fixed: 111 251 190;
+    --cs-secondary-fixed-dim: 78 222 163;
+    --cs-on-secondary-fixed: 0 33 19;
+    --cs-on-secondary-fixed-variant: 0 82 54;
+    --cs-tertiary: 255 185 95;
+    --cs-on-tertiary: 71 42 0;
+    --cs-tertiary-container: 202 129 0;
+    --cs-on-tertiary-container: 62 36 0;
+    --cs-tertiary-fixed: 255 221 184;
+    --cs-tertiary-fixed-dim: 255 185 95;
+    --cs-on-tertiary-fixed: 42 23 0;
+    --cs-on-tertiary-fixed-variant: 101 62 0;
+    --cs-error: 255 180 171;
+    --cs-on-error: 105 0 5;
+    --cs-error-container: 147 0 10;
+    --cs-on-error-container: 255 218 214;
+    --cs-background: 3 20 39;
+    --cs-on-background: 211 228 254;
+    --cs-inverse-surface: 211 228 254;
+    --cs-inverse-on-surface: 33 49 69;
+    --cs-surface-tint: 173 198 255;
+  }
+
+  html.light {
+    --cs-surface: 246 248 252;
+    --cs-surface-dim: 233 238 246;
+    --cs-surface-bright: 255 255 255;
+    --cs-surface-container-lowest: 255 255 255;
+    --cs-surface-container-low: 250 251 254;
+    --cs-surface-container: 240 244 250;
+    --cs-surface-container-high: 231 237 246;
+    --cs-surface-container-highest: 221 229 240;
+    --cs-surface-variant: 221 229 240;
+    --cs-on-surface: 16 26 40;
+    --cs-on-surface-variant: 70 83 106;
+    --cs-outline: 107 120 137;
+    --cs-outline-variant: 195 203 216;
+    --cs-primary: 37 99 235;
+    --cs-on-primary: 255 255 255;
+    --cs-primary-container: 59 130 246;
+    --cs-on-primary-container: 255 255 255;
+    --cs-primary-fixed: 29 78 216;
+    --cs-primary-fixed-dim: 96 165 250;
+    --cs-inverse-primary: 173 198 255;
+    --cs-secondary: 5 150 105;
+    --cs-on-secondary: 255 255 255;
+    --cs-secondary-container: 16 185 129;
+    --cs-on-secondary-container: 255 255 255;
+    --cs-secondary-fixed: 5 150 105;
+    --cs-secondary-fixed-dim: 16 185 129;
+    --cs-on-secondary-fixed: 255 255 255;
+    --cs-on-secondary-fixed-variant: 6 95 70;
+    --cs-tertiary: 180 83 9;
+    --cs-on-tertiary: 255 255 255;
+    --cs-tertiary-container: 245 158 11;
+    --cs-on-tertiary-container: 255 255 255;
+    --cs-tertiary-fixed: 120 53 15;
+    --cs-tertiary-fixed-dim: 180 83 9;
+    --cs-on-tertiary-fixed: 255 255 255;
+    --cs-on-tertiary-fixed-variant: 120 53 15;
+    --cs-error: 185 28 28;
+    --cs-on-error: 255 255 255;
+    --cs-error-container: 254 226 226;
+    --cs-on-error-container: 127 29 29;
+    --cs-background: 246 248 252;
+    --cs-on-background: 16 26 40;
+    --cs-inverse-surface: 16 26 40;
+    --cs-inverse-on-surface: 246 248 252;
+    --cs-surface-tint: 37 99 235;
+  }
+
   /* Tailwind display utilities beat the `hidden` attribute (equal specificity,
      later in the sheet), so the console's panels/bulk bar hide explicitly. */
   [hidden] {
     display: none !important;
+  }
+
+  /* Theme toggle icon: shows what the next click switches to. */
+  html.light .cs-theme-icon-light {
+    display: none;
+  }
+
+  html:not(.light) .cs-theme-icon-dark {
+    display: none;
   }
 
   body {

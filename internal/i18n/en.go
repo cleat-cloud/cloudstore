@@ -12,6 +12,7 @@ var enMessages = map[string]string{
 	"layout.menu":            "Menu",
 	"layout.close_menu":      "Close menu",
 	"layout.demo_label":      "Demo workspace",
+	"layout.theme":           "Toggle light/dark theme",
 	"layout.demo_region":     "locally generated data",
 	"layout.demo_status":     "Demo mode · Healthy",
 	"layout.connected":       "Backblaze B2 · Connected",
