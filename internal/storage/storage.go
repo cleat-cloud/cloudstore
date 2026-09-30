@@ -15,6 +15,7 @@ var (
 	ErrBucketNotEmpty = errors.New("bucket not empty")
 	ErrObjectNotFound = errors.New("object not found")
 	ErrInvalidName    = errors.New("invalid bucket name")
+	ErrAuth           = errors.New("provider authentication failed")
 )
 
 // Provider is one object-storage backend. B2 Cloud Storage is the first
