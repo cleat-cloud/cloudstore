@@ -5,6 +5,9 @@ files, edit lifecycle/CORS governance, and keep a local audit trail. Built with
 [amarra-cais](https://github.com/puppe1990/amarra-cais) — Go + Amarra Views + Drive + SQLite, no SPA
 and no front-end build step.
 
+**Live:** https://cloudstore.apps.gestaobem.com — runs in demo mode until a B2 application key is
+connected in Settings (sign up first; production ships no seeded user).
+
 ![CloudStore console](docs/console.png)
 
 ## What it does
