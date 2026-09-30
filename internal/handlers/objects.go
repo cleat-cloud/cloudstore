@@ -45,6 +45,7 @@ type metadataRow struct {
 
 type objectDetailVM struct {
 	Key          string
+	FileID       string
 	URI          string
 	SizeLabel    string
 	SizeBytes    string
@@ -178,6 +179,7 @@ func (h *ObjectsHandler) objectDetail(r *http.Request, provider storage.Provider
 	}
 	detail := &objectDetailVM{
 		Key:          info.Key,
+		FileID:       info.FileID,
 		URI:          "b2://" + bucket + "/" + info.Key,
 		SizeLabel:    format.Bytes(info.Size),
 		SizeBytes:    format.GroupDigits(info.Size, locale),

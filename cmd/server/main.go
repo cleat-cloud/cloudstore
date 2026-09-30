@@ -123,9 +123,16 @@ func newConsoleService(cfg cais.Config, s *store.SQLiteStore) (*console.Service,
 		return nil, err
 	}
 
+	// Demo data is opt-in (CLOUDSTORE_DEMO=1): a real deployment connects a B2
+	// account instead of serving generated buckets.
+	var demo storage.Provider
+	if os.Getenv("CLOUDSTORE_DEMO") == "1" {
+		demo = fakestore.New(1)
+	}
+
 	service := console.New(s, key, console.Options{
 		QuotaBytes: quotaBytes(),
-		Demo:       fakestore.New(1),
+		Demo:       demo,
 		NewProvider: func(account models.StorageAccount, secret string) storage.Provider {
 			return b2.New(b2.Config{KeyID: account.KeyID, AppKey: secret, Region: account.Region})
 		},
@@ -135,8 +142,10 @@ func newConsoleService(cfg cais.Config, s *store.SQLiteStore) (*console.Service,
 		log.Printf("cloudstore: seed account: %v", err)
 	}
 	// Demo mode should look alive on the first visit (KPIs, charts, audit).
-	if err := service.SeedDemo(context.Background()); err != nil {
-		log.Printf("cloudstore: seed demo data: %v", err)
+	if demo != nil {
+		if err := service.SeedDemo(context.Background()); err != nil {
+			log.Printf("cloudstore: seed demo data: %v", err)
+		}
 	}
 	return service, nil
 }

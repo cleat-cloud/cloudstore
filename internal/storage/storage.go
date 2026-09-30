@@ -31,6 +31,19 @@ type Provider interface {
 	BucketSettings(ctx context.Context, bucket string) (models.BucketSettings, error)
 	UpdateBucketSettings(ctx context.Context, bucket string, update models.BucketSettingsUpdate) error
 	DownloadURL(ctx context.Context, bucket, key string, ttl time.Duration) (string, error)
+
+	// Versions and file-level governance (B2 native API).
+	ListFileVersions(ctx context.Context, bucket, prefix, startName, startID string, limit int) (models.FileVersionPage, error)
+	HideFile(ctx context.Context, bucket, key string) error
+	CopyFile(ctx context.Context, bucket, sourceKey, destKey string) error
+	DeleteFileVersion(ctx context.Context, bucket, key, fileID string) error
+	FileInfo(ctx context.Context, bucket, key, fileID string) (models.FileVersion, error)
+	SetFileRetention(ctx context.Context, bucket, key, fileID, mode string, days int, bypassGovernance bool) error
+	SetFileLegalHold(ctx context.Context, bucket, key, fileID string, on bool) error
+
+	// Download streams one file version into w (by name, or by id when the
+	// name has moved) and reports what it wrote.
+	Download(ctx context.Context, bucket, key, fileID string, w io.Writer) (contentType string, size int64, err error)
 }
 
 // ValidateBucketName enforces the B2 bucket name contract: 6-50 characters,

@@ -29,6 +29,8 @@ func registerRoutes(r *cais.Router, deps Deps, cfg cais.Config) {
 	audit := handlers.NewAuditHandler(consoleDeps)
 	settings := handlers.NewSettingsHandler(consoleDeps)
 
+	handlers.RegisterFileRoutes(r, consoleDeps)
+
 	loginLimit := middleware.NewRateLimiter(10, cfg)
 	resetLimit := middleware.NewRateLimiter(10, cfg)
 

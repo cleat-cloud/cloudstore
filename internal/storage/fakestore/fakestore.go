@@ -24,6 +24,9 @@ type Store struct {
 	faker   *gofakeit.Faker
 	mu      sync.Mutex
 	buckets map[string]*bucketState
+	// versions is the per-key version log used by the version screens; nil
+	// until the first versioned operation (see versions.go).
+	versions map[versionKey][]models.FileVersion
 }
 
 type bucketState struct {

@@ -87,6 +87,33 @@ type ObjectPage struct {
 	HasMore    bool
 }
 
+// FileVersion is one version of a stored file (b2_list_file_versions row),
+// including hide markers and unfinished large files.
+type FileVersion struct {
+	Key         string
+	FileID      string
+	Action      string // "upload" | "hide" | "start"
+	Size        int64
+	ContentType string
+	UploadedAt  time.Time
+	SHA1        string
+	MD5         string
+	Retention   string // "governance" | "compliance" | ""
+	LegalHold   bool
+	Encryption  string // "SSE-B2" | "SSE-C" | ""
+}
+
+// Hidden reports whether the version is a hide marker instead of content.
+func (v FileVersion) Hidden() bool { return v.Action == "hide" }
+
+// FileVersionPage is one page of a version listing.
+type FileVersionPage struct {
+	Versions []FileVersion
+	NextName string
+	NextID   string
+	HasMore  bool
+}
+
 // UsagePoint is one daily usage sample used by the analytics charts.
 type UsagePoint struct {
 	Day     time.Time
