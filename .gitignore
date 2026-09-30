@@ -1,6 +1,7 @@
 bin/
 data/
-web/static/css/styles.css
+# Tailwind output is committed on purpose: Cleat deploys build from a clean clone
+web/static/build/
 node_modules/
 tmp/
 .air/
